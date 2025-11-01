@@ -1,0 +1,21 @@
+{
+  "name": "KC-135 Time Calc",
+  "short_name": "KC-135 Calc",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "KC-135 timing PWA: v5.9.2 with live Now panel + device TZ defaults.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
