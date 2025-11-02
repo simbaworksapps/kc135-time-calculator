@@ -55,6 +55,25 @@
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
   </style>
 </head>
+<script>
+  // GA-safe wrapper so we don't throw if gtag has not loaded yet
+  function gaEvent(name, params = {}) {
+    if (window.gtag) {
+      window.gtag('event', name, params);
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: name, ...params });
+    }
+  }
+
+  // Fires when the user installs the PWA
+  window.addEventListener('appinstalled', () => {
+    gaEvent('pwa_installed', {
+      event_category: 'PWA',
+      event_label: 'Add to Home Screen'
+    });
+  });
+</script>
 <body>
   <header>
     <div class="head">
