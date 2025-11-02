@@ -187,16 +187,24 @@ setTimeout(() => {
   const crew = document.getElementById('crew-rest');
   if (!crew) return;
 
-  // First, force the element to the top of the viewport
+  const headerH = (document.querySelector('header')?.offsetHeight || 56) + 8; // cushion
+
+  // Preferred: use scroll-margin-top and scrollIntoView
+  crew.style.scrollMarginTop = `${headerH}px`;
   crew.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
-  // Then nudge up by the header height so it's not hidden
-  const headerH = (document.querySelector('header')?.offsetHeight || 56) + 8; // cushion
-  // Use a short delay to let the first smooth scroll settle
+  // Safety fallback for some mobile browsers: compute and clamp exact target
   setTimeout(() => {
-    window.scrollBy({ top: -headerH, left: 0, behavior: 'instant' });
-  }, 180);
-}, 200);
+    const scroller = document.scrollingElement || document.documentElement;
+    const targetY = crew.getBoundingClientRect().top + scroller.scrollTop - headerH;
+    const maxY = scroller.scrollHeight - window.innerHeight;
+    const clamped = Math.max(0, Math.min(targetY, maxY));
+    // Only adjust if we're not already close to the intended spot
+    if (Math.abs(scroller.scrollTop - clamped) > 2) {
+      scroller.scrollTo({ top: clamped, behavior: 'smooth' });
+    }
+  }, 150);
+}, 250);
 
 }
 
