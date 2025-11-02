@@ -177,7 +177,7 @@ setTimeout(() => {
   if (!firstLine) return;
 
   const scroller = document.scrollingElement || document.documentElement; // robust on mobile/PWA
-  const headerOffset = 8; // tweak if you want a little breathing room from the top
+  const headerOffset = 4; // tweak if you want a little breathing room from the top
 
   const targetY =
     firstLine.getBoundingClientRect().top + window.pageYOffset - headerOffset;
