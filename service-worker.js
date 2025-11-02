@@ -1,4 +1,4 @@
-const CACHE_NAME = "kc135-pwa-v5_9_13"; // bump version to refresh cache
+const CACHE_NAME = "kc135-pwa-v5_9_14"; // bump version to refresh cache
 const ASSETS = [
   "./index.html",
   "./app.js",
