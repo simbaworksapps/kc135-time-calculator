@@ -173,11 +173,16 @@ function calc(){
 
 // Smooth scroll to timeline after calculation
 setTimeout(() => {
-  const firstLine = document.querySelector('.line');
+  const firstLine = out.querySelector('.line');
   if (firstLine) {
-    firstLine.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const rect = firstLine.getBoundingClientRect();
+    window.scrollBy({
+      top: rect.top - 20, // adjust offset if needed
+      behavior: 'smooth'
+    });
   }
 }, 200);
+
 }
 
 function resetAll(){
