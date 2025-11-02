@@ -61,14 +61,25 @@ function fmtLocalWithOffset(dt, offsetHours){
 }
 function fmtZ(dt){ const hh=dt.getUTCHours().toString().padStart(2,'0'); const mm=dt.getUTCMinutes().toString().padStart(2,'0'); return `${hh}${mm}Z`; }
 function lineDual(name, dt, localOffset, hint, tzLabel=null){
-  const l = document.createElement('div'); l.className='line';
+  const l = document.createElement('div');
+  l.className = 'line';
+
+  // ✅ Give Crew Rest a unique ID so we can scroll to it later
+  if (name === 'Crew Rest') l.id = 'crew-rest';
+
   const left = document.createElement('div');
   const label = tzLabel ? `${name} <span class="hint">(${tzLabel})</span>` : name;
-  left.innerHTML = `<span class="name">${label}</span>${hint?` <span class="hint">(${hint})</span>`:''}`;
-  const right = document.createElement('div'); right.className='time';
+  left.innerHTML = `<span class="name">${label}</span>${hint ? ` <span class="hint">(${hint})</span>` : ''}`;
+
+  const right = document.createElement('div');
+  right.className = 'time';
   right.textContent = `${fmtLocalWithOffset(dt, localOffset)}L / ${fmtZ(dt)}`;
-  l.appendChild(left); l.appendChild(right); out.appendChild(l);
+
+  l.appendChild(left);
+  l.appendChild(right);
+  out.appendChild(l);
 }
+
 function line(name, dt, off, hint){ lineDual(name, dt, off, hint); }
 
 function tzLabelFromOffset(off){
@@ -171,29 +182,21 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
-// Smooth scroll to place Crew Rest at the very top after calculation
+// Smooth scroll so "Crew Rest" lands at the very top
 setTimeout(() => {
-  // find specifically the Crew Rest line
-  const crewRestLine = [...out.querySelectorAll('.line')].find(l =>
-    l.textContent.includes('Crew Rest')
-  );
-  if (!crewRestLine) return;
+  const crew = document.getElementById('crew-rest');
+  if (!crew) return;
 
-  // get the main scrollable document element (works on PWAs too)
+  // header height (sticky bar) + small cushion
+  const header = document.querySelector('header');
+  const headerOffset = (header ? header.offsetHeight : 0) + 8;
+
+  // compute absolute Y of the Crew Rest line (within page)
+  const containerTop = out.getBoundingClientRect().top + window.pageYOffset;
+  const targetY = containerTop + crew.offsetTop - headerOffset;
+
   const scroller = document.scrollingElement || document.documentElement;
-  const headerOffset = 8; // tweak if you want a little space above
-
-  // compute where to scroll
-  const targetY =
-    crewRestLine.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-
-  // slight delay ensures full layout before smooth scroll
-  requestAnimationFrame(() => {
-    scroller.scrollTo({
-      top: targetY,
-      behavior: 'smooth'
-    });
-  });
+  scroller.scrollTo({ top: targetY, behavior: 'smooth' });
 }, 300);
 
 }
