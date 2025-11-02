@@ -200,13 +200,7 @@ function buildOffsetOptions(select, def){
     if(m===def) o.selected=true; select.appendChild(o);
   }
 }
-function tzLabelFromOffset(off){
-  const sign = off>=0?'+':'';
-  const hours = Math.trunc(off);
-  const mins = Math.round((Math.abs(off) - Math.floor(Math.abs(off))) * 60);
-  if(mins===0) return `UTC${sign}${hours}`;
-  return `UTC${sign}${hours}:${String(mins).padStart(2,'0')}`;
-}
+
 function genTZOptions(select){
   const opts = [];
   for(let v=-12; v<=14; v+=0.5){ opts.push(v); }
