@@ -61,25 +61,14 @@ function fmtLocalWithOffset(dt, offsetHours){
 }
 function fmtZ(dt){ const hh=dt.getUTCHours().toString().padStart(2,'0'); const mm=dt.getUTCMinutes().toString().padStart(2,'0'); return `${hh}${mm}Z`; }
 function lineDual(name, dt, localOffset, hint, tzLabel=null){
-  const l = document.createElement('div');
-  l.className = 'line';
-
-  // ✅ Give Crew Rest a unique ID so we can scroll to it later
-  if (name === 'Crew Rest') l.id = 'crew-rest';
-
+  const l = document.createElement('div'); l.className='line';
   const left = document.createElement('div');
   const label = tzLabel ? `${name} <span class="hint">(${tzLabel})</span>` : name;
-  left.innerHTML = `<span class="name">${label}</span>${hint ? ` <span class="hint">(${hint})</span>` : ''}`;
-
-  const right = document.createElement('div');
-  right.className = 'time';
+  left.innerHTML = `<span class="name">${label}</span>${hint?` <span class="hint">(${hint})</span>`:''}`;
+  const right = document.createElement('div'); right.className='time';
   right.textContent = `${fmtLocalWithOffset(dt, localOffset)}L / ${fmtZ(dt)}`;
-
-  l.appendChild(left);
-  l.appendChild(right);
-  out.appendChild(l);
+  l.appendChild(left); l.appendChild(right); out.appendChild(l);
 }
-
 function line(name, dt, off, hint){ lineDual(name, dt, off, hint); }
 
 function tzLabelFromOffset(off){
@@ -181,7 +170,6 @@ function calc(){
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
-
 }
 
 function resetAll(){
@@ -212,7 +200,13 @@ function buildOffsetOptions(select, def){
     if(m===def) o.selected=true; select.appendChild(o);
   }
 }
-
+function tzLabelFromOffset(off){
+  const sign = off>=0?'+':'';
+  const hours = Math.trunc(off);
+  const mins = Math.round((Math.abs(off) - Math.floor(Math.abs(off))) * 60);
+  if(mins===0) return `UTC${sign}${hours}`;
+  return `UTC${sign}${hours}:${String(mins).padStart(2,'0')}`;
+}
 function genTZOptions(select){
   const opts = [];
   for(let v=-12; v<=14; v+=0.5){ opts.push(v); }
