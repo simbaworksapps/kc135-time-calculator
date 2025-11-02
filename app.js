@@ -170,6 +170,23 @@ function calc(){
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
+
+  // Smooth scroll to center "Sortie Dur" line for best timeline view
+setTimeout(() => {
+  const sortieLine = [...out.querySelectorAll('.line')]
+    .find(l => l.textContent.includes('Sortie Dur'));
+  if (!sortieLine) return;
+
+  const scroller = document.scrollingElement || document.documentElement;
+  const rect = sortieLine.getBoundingClientRect();
+  const offsetY = rect.top + window.pageYOffset - (window.innerHeight / 2) + (rect.height / 2);
+
+  scroller.scrollTo({
+    top: offsetY,
+    behavior: 'smooth'
+  });
+}, 300);
+
 }
 
 function resetAll(){
