@@ -276,29 +276,39 @@ if (copyBtn) copyBtn.disabled = true;
   });
 })();
 
+// --- Copy button (desktop-safe) ---
 if (copyBtn) {
   ['click', 'touchend'].forEach(ev => {
-    copyBtn.addEventListener(ev, async () => {
+    copyBtn.addEventListener(ev, (e) => {
       if (!lastCopyText) return;
-      try {
-        await navigator.clipboard.writeText(lastCopyText);
-      } catch {
-        // fallback for desktop or older Safari
+
+      const done = () => {
+        const old = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => (copyBtn.textContent = old), 1200);
+      };
+
+      const fallback = () => {
         const ta = document.createElement('textarea');
         ta.value = lastCopyText;
+        ta.setAttribute('readonly', '');
         ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
         ta.style.opacity = '0';
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand('copy');
+        try { document.execCommand('copy'); } catch (_) {}
         document.body.removeChild(ta);
-      }
+        done();
+      };
 
-      // Feedback
-      const old = copyBtn.textContent;
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => copyBtn.textContent = old, 1200);
-    }, { passive: true });
+      // Use native clipboard only when available AND secure (https/localhost)
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(lastCopyText).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    }, { passive: false });
   });
 }
 
