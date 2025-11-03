@@ -1,4 +1,4 @@
-// KC-135 Time Calculator v5.9.2
+// KC-135 Time Calculator v1.0
 (function(){ const s=document.createElement('style'); s.textContent='.active{outline:2px solid #22c55e !important;}'; document.head.appendChild(s); })();
 function $(id){ return document.getElementById(id); }
 
