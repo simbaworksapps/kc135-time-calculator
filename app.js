@@ -8,6 +8,8 @@ const offShowEl = $('off-show'), offBriefEl = $('off-brief'), offStepEl = $('off
 const basicBtn = $('basic'), augBtn = $('aug'), singleBtn = $('single'), formBtn = $('form');
 const out = $('timeline'), calcBtn = $('calc'), resetBtn = $('reset');
 const nowPanel = $('nowPanel');
+const copyBtn = $('copy');
+let lastCopyText = '';
 
 function deviceOffsetHours(){ return - (new Date().getTimezoneOffset()) / 60; }
 function formatOffsetLabel(off){
@@ -171,6 +173,26 @@ function calc(){
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
+  // Build compact text for Copy (XXXXL/XXXXZ)
+const pair = (label, dt, off) => `${label}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+
+const durHHMM = `${String(Math.floor(dur/60)).padStart(2,'0')}${String(dur%60).padStart(2,'0')}`;
+
+lastCopyText = [
+  pair('Crew Rest', crewRest, offDep),
+  pair('Alert',     alert,    offDep),
+  pair('Show',      show,     offDep),
+  pair('Brief',     brief,    offDep),
+  pair('Step',      step,     offDep),
+  pair('Eng St',    eng,      offDep),
+  pair('T/O',       to,       offDep),
+  `Dur: ${durHHMM}`,
+  pair('Land',      ld,       offArr),
+].join('\n');
+
+if (copyBtn) copyBtn.disabled = false;
+
+
   // Smooth scroll to center "Sortie Dur" line for best timeline view
 setTimeout(() => {
   const sortieLine = [...out.querySelectorAll('.line')]
@@ -218,6 +240,9 @@ requestAnimationFrame(() => {
   setTimeout(jumpTop, 300); // again after animations/resize bars settle
 });
 
+  lastCopyText = '';
+if (copyBtn) copyBtn.disabled = true;
+
 }
 
 ;['click','touchend'].forEach(ev=>{
@@ -250,6 +275,33 @@ requestAnimationFrame(() => {
     }, { passive: false });
   });
 })();
+
+if (copyBtn) {
+  copyBtn.addEventListener('click', async () => {
+    if (!lastCopyText) return;
+
+    try {
+      await navigator.clipboard.writeText(lastCopyText);
+      if (typeof gaEvent === 'function') gaEvent('copy_timeline', {event_category:'Interaction'});
+      const old = copyBtn.textContent;
+      copyBtn.textContent = 'Copied!';
+      setTimeout(()=> copyBtn.textContent = old, 1200);
+    } catch {
+      // Fallback for older iOS/Safari
+      const ta = document.createElement('textarea');
+      ta.value = lastCopyText;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const old = copyBtn.textContent;
+      copyBtn.textContent = 'Copied!';
+      setTimeout(()=> copyBtn.textContent = old, 1200);
+    }
+  });
+}
 
 function buildOffsetOptions(select, def){
   for(let m=0; m<=300; m+=5){
