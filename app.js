@@ -241,7 +241,10 @@ requestAnimationFrame(() => {
 });
 
   lastCopyText = '';
-if (copyBtn) copyBtn.disabled = true;
+  if (copyBtn) {
+    copyBtn.disabled = true;
+    copyBtn.textContent = 'Copy';
+    copyBtn.style.background = '#22c55e'; }
 
 }
 
@@ -282,16 +285,15 @@ if (copyBtn) {
 
     let ok = false;
 
-    // 1) Try modern Clipboard API
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(lastCopyText);
         ok = true;
       }
-    } catch { /* fall through */ }
+    } catch {}
 
-    // 2) Always run a fallback to cover desktop edge cases
-    try {
+    if (!ok) {
+      // fallback for older browsers
       const ta = document.createElement('textarea');
       ta.value = lastCopyText;
       ta.setAttribute('readonly', '');
@@ -299,15 +301,13 @@ if (copyBtn) {
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand('copy');   // legacy path
+      try { document.execCommand('copy'); ok = true; } catch {}
       document.body.removeChild(ta);
-      ok = true;
-    } catch { /* ignore */ }
+    }
 
-    // feedback
-    const old = copyBtn.textContent;
+    // --- Feedback stays until Reset ---
     copyBtn.textContent = ok ? 'Copied!' : 'Copy failed';
-    setTimeout(() => copyBtn.textContent = old, 1200);
+    copyBtn.style.background = ok ? '#22c55e' : '#f87171';  // green or red
   });
 }
 
