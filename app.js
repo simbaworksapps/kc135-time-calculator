@@ -177,6 +177,35 @@ function validateInputs() {
   });
 });
 
+function updateFdpNotice(landDt, fdpDt) {
+  const notice = document.getElementById('fdpNotice');
+  if (!notice) return;
+
+  // Clear state
+  notice.classList.remove('warn', 'bad');
+  notice.style.display = 'none';
+  notice.textContent = '';
+
+  // Validate input
+  if (!(landDt instanceof Date) || isNaN(landDt) || !(fdpDt instanceof Date) || isNaN(fdpDt)) {
+    return;
+  }
+
+  const landMs = landDt.getTime();
+  const fdpMs  = fdpDt.getTime();
+  const THIRTY_MIN = 30 * 60 * 1000;
+
+  if (landMs >= fdpMs) {
+    notice.textContent = '⚠️ FDP EXCEEDED';
+    notice.classList.add('bad');
+    notice.style.display = 'inline-block';
+  } else if (landMs >= fdpMs - THIRTY_MIN) {
+    notice.textContent = '⚠️ Approaching FDP';
+    notice.classList.add('warn');
+    notice.style.display = 'inline-block';
+  }
+}
+
 function calc(){
   out.innerHTML='';
   if (!validateInputs()) {
@@ -276,6 +305,8 @@ lastCopyText = [
 ].join('\n');
 
 if (copyBtn) copyBtn.disabled = false;
+
+updateFdpNotice(ld, fdpEnd);
   
   // Smooth scroll to center "Sortie Dur" line for best timeline view
 setTimeout(() => {
@@ -343,6 +374,14 @@ validateInputs();
 
 basicBtn.classList.remove('bad','warn');
 augBtn.classList.remove('bad','warn');
+
+  const notice = document.getElementById('fdpNotice');
+if (notice) {
+  notice.classList.remove('warn','bad');
+  notice.style.display = 'none';
+  notice.textContent = '';
+}
+
 
 }
 
