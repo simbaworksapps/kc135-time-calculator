@@ -134,6 +134,27 @@ input.error {
 input.ok {
   border-color: #22c55e !important;
 }
+
+.bad {
+  border: 2px solid #ef4444 !important;
+  box-shadow: 0 0 12px 3px rgba(239, 68, 68, 0.5), inset 0 0 6px rgba(239, 68, 68, 0.3);
+  transition: box-shadow 0.3s ease, border 0.3s ease;
+  animation: redPulse 1.5s ease-in-out 1; /* one-time pulse */
+}
+
+@keyframes redPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  50%  { box-shadow: 0 0 20px 8px rgba(239,68,68,0.6); }
+  100% { box-shadow: 0 0 12px 3px rgba(239,68,68,0.5); }
+}
+
+.warn {
+  border: 2px solid #facc15 !important;           /* yellow border */
+  box-shadow: 
+    0 0 10px 2px rgba(250, 204, 21, 0.5),         /* warm yellow outer glow */
+    inset 0 0 4px rgba(250, 204, 21, 0.3);        /* soft inner tint */
+  transition: box-shadow 0.3s ease, border 0.3s ease;
+}
     
   </style>
 </head>
