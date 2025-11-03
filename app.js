@@ -177,6 +177,25 @@ function validateInputs() {
   });
 });
 
+function highlightFDPWarning(ldZulu, fdpZulu) {
+  const fdpLine = [...out.querySelectorAll('.line')]
+    .find(l => l.textContent.includes('FDP'));
+  if (!fdpLine) return;
+
+  const timeLand = ldZulu.getTime();
+  const timeFDP  = fdpZulu.getTime();
+
+  if (timeLand >= timeFDP) {
+    fdpLine.style.border = '2px solid #ef4444';
+    fdpLine.style.background = 'rgba(239, 68, 68, 0.15)';
+    fdpLine.querySelector('.time').style.color = '#f87171'; // light red text
+  } else {
+    fdpLine.style.border = '';
+    fdpLine.style.background = '';
+    fdpLine.querySelector('.time').style.color = '';
+  }
+}
+
 
 function calc(){
   out.innerHTML='';
@@ -248,6 +267,9 @@ function calc(){
   line('FDP', fdpEnd, offDep, mode==='BASIC'?'show+16':'show+24');
   line('CDT', cdtEnd, offDep, mode==='BASIC'?'show+18':'show+24:45');
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
+
+  // Highlight if Land ≥ FDP
+highlightFDPWarning(ld, fdpEnd);
 
   // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => `${label}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
