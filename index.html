@@ -77,6 +77,33 @@
 }
 .section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }
 
+    /* === Calculate button states === */
+#calc {
+  transition: background .2s ease, opacity .2s ease, box-shadow .2s ease;
+  opacity: .6;
+  background: #15803d;        /* subdued (disarmed) */
+  cursor: default;
+}
+
+#calc.ready {
+  opacity: 1;
+  background: #22c55e;        /* bright green (ready) */
+  cursor: pointer;
+  box-shadow: none;
+}
+
+#calc.ready.needs-run {
+  box-shadow: 0 0 12px 2px #22c55e55;
+  animation: calcPulse 1.6s ease-out 1;
+}
+
+@keyframes calcPulse {
+  0%   { box-shadow: 0 0 0 0 #22c55e00; }
+  40%  { box-shadow: 0 0 18px 3px #22c55e66; }
+  100% { box-shadow: 0 0 12px 2px #22c55e33; }
+}
+
+
 button:enabled { cursor: pointer; }
 
   /* validity states */
