@@ -178,43 +178,48 @@ function validateInputs() {
 });
 
 function highlightLimits(ldZulu, fdpZulu, cdtZulu) {
-  if (!out) return; // safety guard
-  const lines = out.querySelectorAll('.line');
-  if (!lines.length) return;
+  if (!out) return;
 
-  // find specific lines by exact label
+  const lines = out.querySelectorAll('.line');
+  if (!lines.length) return;                 // <- fix
+
+  // find a line by its left-hand label
   const findLine = (label) => {
     for (const l of lines) {
       const nameEl = l.querySelector('.name');
-      if (nameEl && nameEl.textContent.trim() === label) return l;
+      if (nameEl && nameEl.textContent.trim().startsWith(label)) return l;
     }
     return null;
   };
 
-  const fdpLine = findLine('FDP');
-  const cdtLine = findLine('CDT');
+  const landLine = findLine('Land');
+  const fdpLine  = findLine('FDP');
+  const cdtLine  = findLine('CDT');
 
-  // reset any prior states
-  [fdpLine, cdtLine].forEach(l => {
-    if (l) l.classList.remove('warn', 'bad');
-  });
+  // clear any previous state
+  [landLine, fdpLine, cdtLine].forEach(el => el?.classList.remove('warn','bad'));
 
-  // make sure we have valid Date objects
-  if (!ldZulu || !(ldZulu instanceof Date) || isNaN(ldZulu)) return;
-
+  // validate inputs
+  if (!(ldZulu instanceof Date) || isNaN(ldZulu)) return;
   const landMs = ldZulu.getTime();
-  const THRESH = 30 * 60 * 1000; // 30 minutes
+  const THRESH = 30 * 60 * 1000; // 30 min
 
   const check = (line, end) => {
     if (!line || !(end instanceof Date) || isNaN(end)) return;
     const endMs = end.getTime();
-    if (landMs >= endMs) line.classList.add('bad');
-    else if (landMs >= endMs - THRESH) line.classList.add('warn');
+    if (landMs >= endMs) {
+      line.classList.add('bad');
+      landLine?.classList.add('bad');       // also tint Land if you’d like
+    } else if (landMs >= endMs - THRESH) {
+      line.classList.add('warn');
+      landLine?.classList.add('warn');      // optional: warn on Land too
+    }
   };
 
   check(fdpLine, fdpZulu);
   check(cdtLine, cdtZulu);
 }
+
 
 function calc(){
   out.innerHTML='';
