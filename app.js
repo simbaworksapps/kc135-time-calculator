@@ -288,8 +288,10 @@ function calc(){
   line('Min Turn T/O', minTurnTO, offArr, 'land+17');
 
   // Highlight if Land ≥ FDP
-highlightFDPWarning(ld, fdpEnd);
-
+try {
+  highlightLimits(ld, fdpEnd, cdtEnd);
+} catch (_) { /* no-op */ }
+  
   // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => `${label}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
 
