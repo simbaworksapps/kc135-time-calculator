@@ -92,6 +92,25 @@ function genTZOptions(select){
   });
 }
 
+// --- Calculate "ready" state tracking ---
+function getCalcSignature(){
+  return JSON.stringify({
+    date: dateEl.value,
+    to: toEl.value,
+    dur: durEl.value,
+    tzDep: tzDepEl.value,
+    tzArr: tzArrEl.value,
+    offShow: offShowEl.value,
+    offBrief: offBriefEl.value,
+    offStep: offStepEl.value,
+    offEng: offEngEl.value,
+    mode,          // BASIC / AUG
+    profile        // SINGLE / FORM
+  });
+}
+let lastRunSig = ''; // updated after a successful calc()
+
+
 const PRESETS = { SINGLE:{show:195,brief:165,step:120,eng:30}, FORM:{show:210,brief:180,step:120,eng:30} };
 let mode='BASIC', profile='SINGLE';
 
@@ -120,12 +139,30 @@ function setValidity(el, isValid) {
 }
 
 function validateInputs() {
-  const toValid  = !!parseHM(toEl.value);      // HH:MM, 00–23
-  const durValid = parseDur(durEl.value) != null; // HH:MM
+  const toValid  = !!parseHM(toEl.value);
+  const durValid = parseDur(durEl.value) != null;
+
   setValidity(toEl, toValid);
   setValidity(durEl, durValid);
+
+  // Reset to default "disarmed" state
+  calcBtn.classList.remove('ready', 'needs-run');
+  calcBtn.disabled = true;
+
+  if (toValid && durValid) {
+    calcBtn.classList.add('ready');
+    calcBtn.disabled = false;
+
+    // Detect if current inputs differ from last run
+    const sig = getCalcSignature();
+    if (sig !== lastRunSig) {
+      calcBtn.classList.add('needs-run');
+    }
+  }
+
   return toValid && durValid;
 }
+
 
 // live validation + Enter closes keyboard (and runs calc if valid)
 [toEl, durEl].forEach(el => {
@@ -248,6 +285,14 @@ setTimeout(() => {
   });
 }, 300);
 
+// mark this state as the last successful run
+lastRunSig = getCalcSignature();
+
+// ensure Calculate shows as ready (no glow) after a run
+calcBtn.classList.add('ready');
+calcBtn.classList.remove('needs-run');
+calcBtn.disabled = false;
+
 }
 
 function resetAll(){
@@ -298,6 +343,19 @@ validateInputs();
   calcBtn.addEventListener(ev, calc);
   resetBtn.addEventListener(ev, resetAll);
 });
+
+// whenever any of these change, recompute readiness/glow
+[dateEl, tzDepEl, tzArrEl, offShowEl, offBriefEl, offStepEl, offEngEl]
+  .forEach(el => el.addEventListener('change', validateInputs));
+
+// mode/profile buttons should also trigger validate
+['click','touchend'].forEach(ev => {
+  basicBtn.addEventListener(ev, () => { applyMode('BASIC');  validateInputs(); });
+  augBtn.addEventListener(ev,   () => { applyMode('AUG');    validateInputs(); });
+  singleBtn.addEventListener(ev,() => { applyProfile('SINGLE'); validateInputs(); });
+  formBtn.addEventListener(ev,  () => { applyProfile('FORM');   validateInputs(); });
+});
+
 
 // --- Ensure the lion badge link works inside the PWA (iOS/Android) ---
 (() => {
