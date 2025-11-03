@@ -214,6 +214,16 @@ function calc(){
   const fdpEnd = addMin(show, MOD.fdp);
   const cdtEnd = addMin(show, MOD.cdt);
 
+  // --- FDP Exceeded? Highlight BASIC/AUG box ---
+basicBtn.classList.remove('bad');
+augBtn.classList.remove('bad');
+
+if (ld.getTime() >= fdpEnd.getTime()) {
+  // FDP exceeded → highlight based on current mode
+  if (mode === 'BASIC') basicBtn.classList.add('bad');
+  else augBtn.classList.add('bad');
+}
+
   const latestAlert = addMin(alert, 6*60);
   const picExtAlert = addMin(alert, 8*60);
   const reevalORM = addMin(to, 4*60);
@@ -330,6 +340,9 @@ requestAnimationFrame(() => {
 
   [toEl, durEl].forEach(el => el.classList.remove('error','ok'));
 validateInputs();
+
+basicBtn.classList.remove('bad','warn');
+augBtn.classList.remove('bad','warn');
 
 }
 
