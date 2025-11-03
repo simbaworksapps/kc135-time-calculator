@@ -283,38 +283,25 @@ if (copyBtn) {
   copyBtn.addEventListener('click', async () => {
     if (!lastCopyText) return;
 
-    // Feedback helper
-    const flash = (msg) => {
-      const old = copyBtn.textContent;
-      copyBtn.textContent = msg;
-      setTimeout(() => (copyBtn.textContent = old), 1200);
-    };
-
-    // 1) Try modern API when available & secure (HTTPS/localhost)
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(lastCopyText);
-        flash('Copied!');
-        return;
-      }
-    } catch { /* fall through */ }
-
-    // 2) Fallback: textarea + execCommand (works in most desktops)
-    try {
+      // Modern API (works on HTTPS + PWAs)
+      await navigator.clipboard.writeText(lastCopyText);
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => (copyBtn.textContent = 'Copy'), 1200);
+      return;
+    } catch {
+      // Fallback for older browsers or sandboxed contexts
       const ta = document.createElement('textarea');
       ta.value = lastCopyText;
-      ta.setAttribute('readonly', '');
       ta.style.position = 'fixed';
-      ta.style.top = '-1000px';
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
-      const ok = document.execCommand('copy');
+      try { document.execCommand('copy'); } catch {}
       document.body.removeChild(ta);
-      flash(ok ? 'Copied!' : 'Copy failed');
-    } catch {
-      flash('Copy failed');
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => (copyBtn.textContent = 'Copy'), 1200);
     }
   });
 }
