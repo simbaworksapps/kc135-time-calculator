@@ -177,31 +177,6 @@ function validateInputs() {
   });
 });
 
-function lineDual(name, dt, localOffset, hint, tzLabel=null){
-  const l = document.createElement('div');
-  l.className = 'line';
-  l.dataset.label = name;   // <— add this line
-  ...
-}
-
-function highlightFDP(landUtc, fdpUtc){
-  if (!out) return;
-
-  const landLine = out.querySelector('.line[data-label="Land"]');
-  const fdpLine  = out.querySelector('.line[data-label="FDP"]');
-
-  // clear previous state
-  [landLine, fdpLine].forEach(el => el?.classList.remove('bad'));
-
-  if (!(landUtc instanceof Date) || isNaN(landUtc)) return;
-  if (!(fdpUtc  instanceof Date) || isNaN(fdpUtc))  return;
-
-  if (landUtc.getTime() >= fdpUtc.getTime()){
-    fdpLine?.classList.add('bad');
-    landLine?.classList.add('bad');   // also tint Land (optional; remove if you only want FDP)
-  }
-}
-
 function calc(){
   out.innerHTML='';
   if (!validateInputs()) {
@@ -291,8 +266,6 @@ lastCopyText = [
 ].join('\n');
 
 if (copyBtn) copyBtn.disabled = false;
-
-highlightFDP(ld, fdpEnd);
   
   // Smooth scroll to center "Sortie Dur" line for best timeline view
 setTimeout(() => {
