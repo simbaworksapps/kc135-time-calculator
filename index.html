@@ -55,21 +55,25 @@
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
     .section-bar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px;}
-.copy-btn {
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: none;
-  background: #22c55e;    /* ✅ same green as Calculate */
-  color: #0b1220;         /* matches theme */
-  font-size: 0.8rem;
-  cursor: pointer;
-  height: 28px;
-  line-height: 1;
+.copy-btn{
+  background:#22c55e;     /* same green as Calculate */
+  color:#0b1220;          /* theme text color */
+  border:none;
+  border-radius:12px;     /* same radius as your toggles */
+  padding:10px 18px;      /* same visual height as Formation */
+  height:42px;            /* force exact height */
+  font-size:0.85rem;
+  font-weight:600;
+  line-height:1.2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 2px 4px rgba(0,0,0,.3);
+  transition:transform .15s, box-shadow .15s;
 }
-.copy-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
+.copy-btn:hover:not(:disabled){ transform:translateY(-1px); box-shadow:0 3px 6px rgba(0,0,0,.4); }
+.copy-btn:disabled{ opacity:.5; cursor:default; }
 
   </style>
 </head>
