@@ -283,31 +283,39 @@ if (copyBtn) {
   copyBtn.addEventListener('click', async () => {
     if (!lastCopyText) return;
 
-    let ok = false;
+    // Feedback helper
+    const flash = (msg) => {
+      const old = copyBtn.textContent;
+      copyBtn.textContent = msg;
+      setTimeout(() => (copyBtn.textContent = old), 1200);
+    };
 
+    // 1) Try modern API when available & secure (HTTPS/localhost)
     try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(lastCopyText);
-        ok = true;
+        flash('Copied!');
+        return;
       }
-    } catch {}
+    } catch { /* fall through */ }
 
-    if (!ok) {
-      // fallback for older browsers
+    // 2) Fallback: textarea + execCommand (works in most desktops)
+    try {
       const ta = document.createElement('textarea');
       ta.value = lastCopyText;
       ta.setAttribute('readonly', '');
       ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
       ta.style.opacity = '0';
       document.body.appendChild(ta);
+      ta.focus();
       ta.select();
-      try { document.execCommand('copy'); ok = true; } catch {}
+      const ok = document.execCommand('copy');
       document.body.removeChild(ta);
+      flash(ok ? 'Copied!' : 'Copy failed');
+    } catch {
+      flash('Copy failed');
     }
-
-    // --- Feedback stays until Reset ---
-    copyBtn.textContent = ok ? 'Copied!' : 'Copy failed';
-    copyBtn.style.background = ok ? '#22c55e' : '#f87171';  // green or red
   });
 }
 
