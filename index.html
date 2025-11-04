@@ -138,31 +138,63 @@
 }
 
 
-/* Base calc button */
-#calc{
-  background:#15803d;        /* subdued green when not ready */
-  color:#0b1220;
-  border:1px solid transparent;
+/* Calculate Button Behavior LED Chasing its tail */
+#calc {
+  transition: background .2s ease, opacity .2s ease;
+  opacity: .6;
+  background: #15803d;
+  cursor: default;
+  border-radius: 10px;              /* make sure this matches your inline style */
+}
+
+#calc.ready {
+  opacity: 1;
+  background: #22c55e;
+  cursor: pointer;
+}
+
+/* ===== LED chaser ring (thin outline that loops around) ===== */
+#calc.ready.needs-run {
+  position: relative;               /* anchor pseudo element */
+  z-index: 0;
+}
+
+/* Draw only a 2px ring, with a small bright segment that rotates */
+#calc.ready.needs-run::before{
+  content:"";
+  position:absolute;
+  inset:0;                          /* flush with the button edge */
+  border-radius: 10px;              /* match #calc radius */
+  padding:2px;                      /* ring thickness */
+  background:
+    conic-gradient(
+      from 0deg,
+      #facc15 0 10deg,              /* the “LED” segment length */
+      transparent 10deg 360deg
+    );
+  /* Mask to keep ONLY a thin ring (cut out the center) */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: calcRingSpin 1.25s linear infinite;
+  pointer-events:none;
+}
+
+/* Optional subtle constant outline under the runner */
+#calc.ready.needs-run::after{
+  content:"";
+  position:absolute;
+  inset:0;
   border-radius:10px;
-  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+  box-shadow: 0 0 0 1px rgba(250,204,21,.35) inset;
+  pointer-events:none;
 }
 
-/* Ready state (enabled) */
-#calc.ready{ background:#22c55e; }
+/* Rotate the ring */
+@keyframes calcRingSpin { to { transform: rotate(360deg); } }
 
-/* Your yellow highlight when inputs changed */
-#calc.ready.needs-run{
-  border-color:#facc15;
-  box-shadow:0 0 12px 2px rgba(250,204,21,.8);
-}
-
-/* Disabled look */
-#calc:disabled{
-  opacity:.6;
-  background:#134e24;
-  border-color:transparent;
-  box-shadow:none;
-}
 
 button:enabled { cursor: pointer; }
 
@@ -298,11 +330,8 @@ input.ok {
 
   <div class="sticky-run">
     <div class="row">
-      <button id="calc"
-  style="background:#22c55e;color:#0b1220;border:none;border-radius:10px;">
-  Calculate
-</button>
-
+      <button id="calc" style="background:#22c55e;color:#0b1220;border:none;border-radius:10px;">Calculate</button>
+      <button id="reset">Reset</button>
     </div>
   </div>
 
