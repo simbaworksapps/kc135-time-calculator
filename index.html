@@ -54,59 +54,42 @@
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
-/* ===== Section Header Row: title | centered pill | copy ===== */
-.section-bar {
-  position: relative;                       /* enable absolute centering */
-  display: grid;
-  grid-template-columns: auto 1fr auto;     /* title | flexible space | copy */
-  align-items: center;
-  column-gap: 8px;
-  margin: 10px 0 6px;
+/* Title + centered pill + Copy (flex version) */
+.section-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;            /* prevents overlap on small screens */
+  margin:10px 0 6px;
 }
 
 /* Title (left) */
-.section-bar .section-title {
-  grid-column: 1;
-  justify-self: start;
-  white-space: nowrap;
-  min-width: 0;
+.section-bar .section-title{
+  white-space:nowrap;
+  min-width:0;
 }
 
 /* Copy button (right) */
-.section-bar .copy-btn {
-  grid-column: 3;
-  justify-self: end;
-  width: auto !important;
-  height: 42px;
-  padding: 10px 18px;
-  border-radius: 12px;
-  background: #15803d;        /* subdued, same as Calc default */
-  color: #0b1220;
-  border: none;
-  line-height: 1;
-  cursor: default;
-  opacity: 0.6;               /* slightly transparent like Calc */
-  box-shadow: none;
-  transition: background 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
+.section-bar .copy-btn{
+  width:auto !important;
+  height:42px;
+  padding:10px 18px;
+  border-radius:12px;
+  background:#15803d;
+  color:#0b1220;
+  border:none;
+  line-height:1;
+  cursor:default;
+  opacity:.6;
+  box-shadow:none;
+  transition:background .25s ease, opacity .25s ease, box-shadow .25s ease;
 }
-
-/* When Copy is active (enabled and ready) */
-.section-bar .copy-btn.ready,
-.section-bar .copy-btn:not(:disabled) {
-  background: #22c55e;        /* bright green like Calc ready state */
-  cursor: pointer;
-  opacity: 1;
-  box-shadow: none;
+.section-bar .copy-btn:not(:disabled){
+  background:#22c55e;
+  cursor:pointer;
+  opacity:1;
 }
-
-/* FDP Notice Pill — centered neatly between Timeline and Copy, never overlaps buttons */
-.section-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; /* prevents overlap on small screens */
-}
-
+    
 #fdpNotice {
   position: relative;              /* normal flow instead of absolute */
   display: inline-flex;
@@ -146,22 +129,27 @@
 }
 
 
-/* ===== Solid yellow outline when the button needs a run ===== */
-#calc.ready.needs-run {
-  position: relative;       /* keep for pseudo element anchoring */
-  z-index: 0;
+/* Calculate button visuals: dim by default, bright when .ready */
+#calc{
+  transition: background .25s ease, opacity .25s ease;
+  opacity:.6;
+  background:#15803d;
+  color:#0b1220;
+  border:none;
+  border-radius:10px;
+  cursor: default;
 }
-
-/* A clean 2px yellow ring that hugs the button radius */
+#calc.ready{
+  opacity:1;
+  background:#22c55e;
+  cursor:pointer;
+}
+/* Yellow outline when inputs changed since last run */
+#calc.ready.needs-run{ position:relative; z-index:0; }
 #calc.ready.needs-run::before{
-  content:"";
-  position:absolute;
-  inset:0;                  /* flush with edges */
-  border-radius:10px;       /* match the button radius */
-  box-shadow: 0 0 0 2px #facc15 inset;  /* solid yellow line */
-  pointer-events:none;
+  content:""; position:absolute; inset:0; border-radius:10px;
+  box-shadow:0 0 0 2px #facc15 inset; pointer-events:none;
 }
-
 
 button:enabled { cursor: pointer; }
 
@@ -297,7 +285,7 @@ input.ok {
 
   <div class="sticky-run">
     <div class="row">
-      <button id="calc" style="background:#22c55e;color:#0b1220;border:none;border-radius:10px;">Calculate</button>
+      <button id="calc">Calculate</button>
       <button id="reset">Reset</button>
     </div>
   </div>
