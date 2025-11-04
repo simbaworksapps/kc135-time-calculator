@@ -94,45 +94,37 @@ function genTZOptions(select){
 
 function addCalcLedOutline(){
   const btn = document.getElementById('calc');
-  if (!btn || btn.querySelector('.led-outline')) return;
+  if (!btn) return;
+
+  // remove any prior overlay (hot reloads)
+  btn.querySelectorAll('.led-outline').forEach(n => n.remove());
 
   const svgNS = 'http://www.w3.org/2000/svg';
-  const svg   = document.createElementNS(svgNS, 'svg');
+  const svg = document.createElementNS(svgNS, 'svg');
   svg.setAttribute('class', 'led-outline');
   svg.setAttribute('viewBox', '0 0 100 100');
   svg.setAttribute('preserveAspectRatio', 'none');
   svg.setAttribute('aria-hidden', 'true');
 
-  // Match the button’s corner radius so the stroke hugs the edge
-  const cs       = getComputedStyle(btn);
-  const rPx      = parseFloat(cs.borderTopLeftRadius) || 10;
-  const h        = btn.getBoundingClientRect().height || 44;
-  const rxPct    = Math.max(0, Math.min(25, (rPx / h) * 100)); // 0–25% works well
+  const cs  = getComputedStyle(btn);
+  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
+  const h   = btn.getBoundingClientRect().height || 44;
+  const rxp = Math.max(0, Math.min(25, (rPx / h) * 100));
 
-  // Base ring
-  const base = document.createElementNS(svgNS, 'rect');
-  base.setAttribute('class', 'base');
-  base.setAttribute('x', '1.25');
-  base.setAttribute('y', '1.25');
-  base.setAttribute('width',  '97.5');
-  base.setAttribute('height', '97.5');
-  base.setAttribute('rx', rxPct);
-  base.setAttribute('ry', rxPct);
-  base.setAttribute('pathLength', '100');
+  const runner = document.createElementNS(svgNS, 'rect');
+  runner.setAttribute('class', 'runner');
+  runner.setAttribute('x', '1.25');
+  runner.setAttribute('y', '1.25');
+  runner.setAttribute('width', '97.5');
+  runner.setAttribute('height', '97.5');
+  runner.setAttribute('rx', rxp);
+  runner.setAttribute('ry', rxp);
+  runner.setAttribute('pathLength', '100');
 
-  // Moving runner
-  const run = document.createElementNS(svgNS, 'rect');
-  run.setAttribute('class', 'runner');
-  run.setAttribute('x', '1.25');
-  run.setAttribute('y', '1.25');
-  run.setAttribute('width',  '97.5');
-  run.setAttribute('height', '97.5');
-  run.setAttribute('rx', rxPct);
-  run.setAttribute('ry', rxPct);
-  run.setAttribute('pathLength', '100');
+  // 🔒 hard-stop the black fill no matter what
+  runner.setAttribute('fill', 'none');
 
-  svg.appendChild(base);
-  svg.appendChild(run);
+  svg.appendChild(runner);
   btn.appendChild(svg);
 }
 
