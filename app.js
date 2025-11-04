@@ -92,6 +92,35 @@ function genTZOptions(select){
   });
 }
 
+function addCalcLedOutline(){
+  const btn = document.getElementById('calc');
+  if (!btn || btn.querySelector('.led-outline')) return;
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'led-outline');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'none');
+
+  // Compute rx from the button’s CSS border-radius so the SVG corners match
+  const cs = getComputedStyle(btn);
+  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;           // fallback to 10px
+  const h = btn.getBoundingClientRect().height || 44;             // button height in px
+  const rxPercent = Math.max(0, Math.min(25, (rPx / h) * 100));   // convert px → % of viewBox
+
+  const rect = document.createElementNS(svgNS, 'rect');
+  rect.setAttribute('x', '1.25');
+  rect.setAttribute('y', '1.25');
+  rect.setAttribute('width', '97.5');
+  rect.setAttribute('height', '97.5');
+  rect.setAttribute('rx', rxPercent);
+  rect.setAttribute('ry', rxPercent);
+  rect.setAttribute('pathLength', '100');
+
+  svg.appendChild(rect);
+  btn.appendChild(svg);
+}
+
 // --- Calculate "ready" state tracking ---
 function getCalcSignature(){
   return JSON.stringify({
@@ -484,6 +513,8 @@ function boot(){
   applyProfile('SINGLE'); applyMode('BASIC'); resetAll();
   updateNowPanel(); setInterval(updateNowPanel, 30000);
 
-validateInputs();
+  addCalcLedOutline();   // <— add this line
+
+  validateInputs();
 }
 boot();
