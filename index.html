@@ -155,13 +155,11 @@
 /* overlay container sits just outside the button edge */
 #calc .led-outline{
   position:absolute;
-  left:-3px; right:-3px; top:-3px; bottom:-3px;
+  inset:0;                 /* was -3px; we'll inset the stroke in JS */
   pointer-events:none;
-  display:none;                 /* only shows when needs-run */
+  display:none;
   z-index:1;
 }
-
-/* show the LED only when inputs changed */
 #calc.ready.needs-run .led-outline{ display:block; }
 
 /* base ring (subtle continuous track) */
