@@ -54,59 +54,50 @@
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
-/* ===== Section Header Row: title | (gap with centered pill) | copy ===== */
-.section-bar{
-  display:grid;
-  grid-template-columns: auto 1fr auto;       /* <-- key change */
-  grid-template-areas: "title gap copy";
-  align-items:center;
-  column-gap:8px;
-  margin:10px 0 6px;
+/* ===== Section Header Row: title | centered pill | copy ===== */
+.section-bar {
+  position: relative;                       /* enable absolute centering */
+  display: grid;
+  grid-template-columns: auto 1fr auto;     /* title | flexible space | copy */
+  align-items: center;
+  column-gap: 8px;
+  margin: 10px 0 6px;
 }
 
 /* Title (left) */
-.section-bar .section-title{
-  grid-area:title;
-  justify-self:start;
-  white-space:nowrap;  /* prevents wrap that would shift the gap */
+.section-bar .section-title {
+  grid-column: 1;
+  justify-self: start;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-/* Pill centered in the GAP column */
-#fdpNotice{
-  grid-area:gap;
-  justify-self:center; /* centers within the remaining space between title & copy */
-  position:static;
-  pointer-events:none;
-  z-index:1;
+/* Copy button (right) */
+.section-bar .copy-btn {
+  grid-column: 3;
+  justify-self: end;
+  width: auto !important;                   /* override any global width */
+  height: 42px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #22c55e;
+  color: #0b1220;
+  border: none;
+  line-height: 1;
+  cursor: pointer;
 }
 
-/* Copy (right) */
-.section-bar .copy-btn{
-  grid-area:copy;
-  justify-self:end;
-  width:auto !important;
-  height:42px;
-  padding:10px 18px;
-  border-radius:12px;
-  background:#22c55e;
-  color:#0b1220;
-  border:none;
-  line-height:1;
-  cursor:pointer;
+/* FDP Notice Pill — stays perfectly centered on all screen sizes */
+#fdpNotice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;                     /* prevent blocking Copy clicks */
+  z-index: 1;
 }
 
-/* phones: stack pill under the title */
-@media (max-width:480px){
-  .section-bar{
-    grid-template-columns: 1fr max-content;
-    grid-template-areas:
-      "title copy"
-      "gap   gap";
-    row-gap:8px;
-  }
-  .section-bar .copy-btn{ padding:8px 14px; font-size:.95rem; }
-  #fdpNotice{ justify-self:center; }
-}
+/* No media query override — same layout for mobile and desktop */
 
 /* FDP Notice pill states */
 .notice{
