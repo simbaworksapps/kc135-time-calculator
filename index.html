@@ -54,37 +54,37 @@
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
 
-/* ===== Section Header Row: Title | Pill | Copy ===== */
+/* ===== Section Header Row: title | (gap with centered pill) | copy ===== */
 .section-bar{
   display:grid;
-  grid-template-columns: 1fr auto 1fr;   /* Symmetric grid */
-  grid-template-areas: "title pill copy";
+  grid-template-columns: auto 1fr auto;       /* <-- key change */
+  grid-template-areas: "title gap copy";
   align-items:center;
   column-gap:8px;
   margin:10px 0 6px;
 }
 
-/* Title (left side) */
+/* Title (left) */
 .section-bar .section-title{
   grid-area:title;
   justify-self:start;
-  min-width:0; /* prevents overflow */
+  white-space:nowrap;  /* prevents wrap that would shift the gap */
 }
 
-/* FDP Notice (center) */
+/* Pill centered in the GAP column */
 #fdpNotice{
-  grid-area:pill;
-  justify-self:center;
+  grid-area:gap;
+  justify-self:center; /* centers within the remaining space between title & copy */
   position:static;
   pointer-events:none;
   z-index:1;
 }
 
-/* Copy button (right side) */
+/* Copy (right) */
 .section-bar .copy-btn{
   grid-area:copy;
   justify-self:end;
-  width:auto !important; /* override global width */
+  width:auto !important;
   height:42px;
   padding:10px 18px;
   border-radius:12px;
@@ -95,30 +95,17 @@
   cursor:pointer;
 }
 
-/* Responsive layout for phones */
+/* phones: stack pill under the title */
 @media (max-width:480px){
   .section-bar{
-    grid-template-columns:1fr max-content;
+    grid-template-columns: 1fr max-content;
     grid-template-areas:
       "title copy"
-      "pill  pill";
+      "gap   gap";
     row-gap:8px;
   }
-
-  .section-bar .copy-btn{
-    width:auto !important;
-    padding:8px 14px;
-    font-size:0.95rem;
-  }
-
-  #fdpNotice{
-    justify-self:center;
-  }
-
-  .notice{
-    font-size:0.8rem;
-    padding:6px 10px;
-  }
+  .section-bar .copy-btn{ padding:8px 14px; font-size:.95rem; }
+  #fdpNotice{ justify-self:center; }
 }
 
 /* FDP Notice pill states */
