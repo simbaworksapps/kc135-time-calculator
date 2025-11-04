@@ -96,45 +96,50 @@ function addCalcLedOutline(){
   const btn = document.getElementById('calc');
   if (!btn) return;
 
-  // clean up if re-adding
+  // Remove any previous overlay (hot reload / reset)
   btn.querySelectorAll('.led-outline').forEach(n => n.remove());
 
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('class', 'led-outline');
-  svg.setAttribute('viewBox', '0 0 100 100');
-  svg.setAttribute('preserveAspectRatio', 'none');
-  svg.setAttribute('aria-hidden', 'true');
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class','led-outline');
+  svg.setAttribute('viewBox','0 0 100 100');
+  svg.setAttribute('preserveAspectRatio','none');
+  svg.setAttribute('aria-hidden','true');
 
-  const cs = getComputedStyle(btn);
-  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
-  const h   = btn.getBoundingClientRect().height || 44;
-  const rPct = Math.max(0, Math.min(24, (rPx / h) * 100));
+  // Match the button’s rounded corners so the stroke hugs the edge
+  const cs  = getComputedStyle(btn);
+  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;  // fallback to 10px
+  const h   = btn.getBoundingClientRect().height || 44;  // px
+  const rxp = Math.max(0, Math.min(25, (rPx / h) * 100)); // % of viewBox
 
-  // optional faint base ring
-  const base = document.createElementNS(svgNS, 'rect');
-  base.setAttribute('class', 'base');
-  base.setAttribute('x', '1.25');
-  base.setAttribute('y', '1.25');
-  base.setAttribute('width',  '97.5');
-  base.setAttribute('height', '97.5');
-  base.setAttribute('rx', rPct);
-  base.setAttribute('ry', rPct);
-  base.setAttribute('pathLength', '100');
+  // Base ring
+  const base = document.createElementNS(ns, 'rect');
+  base.setAttribute('class','base');
+  base.setAttribute('x','1.25');
+  base.setAttribute('y','1.25');
+  base.setAttribute('width','97.5');
+  base.setAttribute('height','97.5');
+  base.setAttribute('rx', rxp);
+  base.setAttribute('ry', rxp);
+  base.setAttribute('pathLength','100');   // perimeter normalized
 
-  // bright moving runner
-  const runner = document.createElementNS(svgNS, 'rect');
-  runner.setAttribute('class', 'runner');
-  runner.setAttribute('x', '1.25');
-  runner.setAttribute('y', '1.25');
-  runner.setAttribute('width',  '97.5');
-  runner.setAttribute('height', '97.5');
-  runner.setAttribute('rx', rPct);
-  runner.setAttribute('ry', rPct);
-  runner.setAttribute('pathLength', '1000');
-  runner.setAttribute('fill', 'none');
+  // Runner (single lit segment)
+  const runner = document.createElementNS(ns, 'rect');
+  runner.setAttribute('class','runner');
+  runner.setAttribute('x','1.25');
+  runner.setAttribute('y','1.25');
+  runner.setAttribute('width','97.5');
+  runner.setAttribute('height','97.5');
+  runner.setAttribute('rx', rxp);
+  runner.setAttribute('ry', rxp);
+  runner.setAttribute('pathLength','100');
 
-  svg.appendChild(base);      // safe to keep or remove if you don’t want it
+  // **Make it ONE solid segment** (e.g., 18% lit, 82% gap)
+  const dash = 18; // tweak 10–30 to taste
+  runner.style.strokeDasharray = `${dash} ${100 - dash}`;
+  runner.style.strokeDashoffset = '0';
+
+  svg.appendChild(base);
   svg.appendChild(runner);
   btn.appendChild(svg);
 }
