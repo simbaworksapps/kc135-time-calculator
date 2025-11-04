@@ -76,15 +76,24 @@
 .section-bar .copy-btn {
   grid-column: 3;
   justify-self: end;
-  width: auto !important;                   /* override any global width */
+  width: auto !important;                   
   height: 42px;
   padding: 10px 18px;
   border-radius: 12px;
-  background: #22c55e;
+  background: #22c55e;                     /* bright green (active) */
   color: #0b1220;
   border: none;
   line-height: 1;
   cursor: pointer;
+  transition: background 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Subdued state when disabled */
+.section-bar .copy-btn:disabled {
+  opacity: 0.5;
+  background: #15803d;                     /* darker green */
+  cursor: default;
+  box-shadow: none;
 }
 
 /* FDP Notice Pill — stays perfectly centered on all screen sizes */
