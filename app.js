@@ -465,18 +465,6 @@ function buildOffsetOptions(select, def){
   }
 }
 
-function genTZOptions(select){
-  const opts = [];
-  for(let v=-12; v<=14; v+=0.5){ opts.push(v); }
-  [5.75,12.75,8.75].forEach(v=>opts.push(v));
-  const unique = [...new Set(opts)].sort((a,b)=>a-b);
-  unique.forEach(v=>{
-    const o = document.createElement('option');
-    o.value = v; o.textContent = tzLabelFromOffset(v);
-    select.appendChild(o);
-  });
-}
-
 function boot(){
   genTZOptions(tzDepEl); genTZOptions(tzArrEl);
   buildOffsetOptions(offShowEl,195); buildOffsetOptions(offBriefEl,165); buildOffsetOptions(offStepEl,120); buildOffsetOptions(offEngEl,30);
