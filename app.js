@@ -92,70 +92,6 @@ function genTZOptions(select){
   });
 }
 
-function addCalcLedOutline(){
-  const btn = document.getElementById('calc');
-  if (!btn) return;
-
-  // Remove any previous overlay
-  btn.querySelectorAll('.led-outline').forEach(n => n.remove());
-
-  const ns = 'http://www.w3.org/2000/svg';
-
-  // Current button size (in px)
-  const w = Math.max(10, btn.clientWidth);
-  const h = Math.max(10, btn.clientHeight);
-
-  // Stroke settings
-  const strokeW = 3;                 // LED thickness
-  const inset   = strokeW / 2 + 1;   // keep stroke from clipping
-
-  // Match the button's corner radius in px
-  const cs  = getComputedStyle(btn);
-  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
-
-  // Build SVG at the button's exact pixel size
-  const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('class', 'led-outline');
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  svg.setAttribute('width',  '100%');
-  svg.setAttribute('height', '100%');
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet'); // no stretch
-  svg.setAttribute('aria-hidden', 'true');
-
-  // Base ring (subtle track)
-  const base = document.createElementNS(ns, 'rect');
-  base.setAttribute('class', 'base');
-  base.setAttribute('x', inset);
-  base.setAttribute('y', inset);
-  base.setAttribute('width',  Math.max(0, w - inset*2));
-  base.setAttribute('height', Math.max(0, h - inset*2));
-  base.setAttribute('rx', rPx);
-  base.setAttribute('ry', rPx);
-  base.setAttribute('pathLength', '100');
-  base.style.strokeWidth = String(strokeW);
-
-  // Runner (single solid segment)
-  const runner = document.createElementNS(ns, 'rect');
-  runner.setAttribute('class', 'runner');
-  runner.setAttribute('x', inset);
-  runner.setAttribute('y', inset);
-  runner.setAttribute('width',  Math.max(0, w - inset*2));
-  runner.setAttribute('height', Math.max(0, h - inset*2));
-  runner.setAttribute('rx', rPx);
-  runner.setAttribute('ry', rPx);
-  runner.setAttribute('pathLength', '100');
-  runner.style.strokeWidth = String(strokeW);
-
-  // ONE segment: 20% lit, 80% gap (tweak 10–30 for shorter/longer snake)
-  const dash = 20;
-  runner.style.strokeDasharray  = `${dash} ${100 - dash}`;
-  runner.style.strokeDashoffset = '0';
-
-  svg.appendChild(base);
-  svg.appendChild(runner);
-  btn.appendChild(svg);
-}
-
 // --- Calculate "ready" state tracking ---
 function getCalcSignature(){
   return JSON.stringify({
@@ -542,17 +478,25 @@ function genTZOptions(select){
 }
 
 function boot(){
-  // ... your existing boot code ...
-  addCalcLedOutline();
+  // Build selects
+  genTZOptions(tzDepEl);
+  genTZOptions(tzArrEl);
+  buildOffsetOptions(offShowEl, 195);
+  buildOffsetOptions(offBriefEl, 165);
+  buildOffsetOptions(offStepEl, 120);
+  buildOffsetOptions(offEngEl, 30);
 
-  // Recompute if the button size changes (orientation, viewport, font size)
-  if (window.ResizeObserver) {
-    const ro = new ResizeObserver(() => addCalcLedOutline());
-    ro.observe(document.getElementById('calc'));
-  } else {
-    window.addEventListener('resize', addCalcLedOutline);
-  }
+  // Defaults
+  const off = deviceOffsetHours();
+  tzDepEl.value = String(off);
+  tzArrEl.value = String(off);
+  applyProfile('SINGLE');
+  applyMode('BASIC');
 
+  // Reset UI, start clock, validate
+  resetAll();
+  updateNowPanel();
+  setInterval(updateNowPanel, 30000);
   validateInputs();
 }
 
