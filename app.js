@@ -385,6 +385,15 @@ if (notice) {
 
 }
 
+;['click','touchend'].forEach(ev=>{
+  basicBtn.addEventListener(ev, ()=>applyMode('BASIC'));
+  augBtn.addEventListener(ev, ()=>applyMode('AUG'));
+  singleBtn.addEventListener(ev, ()=>applyProfile('SINGLE'));
+  formBtn.addEventListener(ev, ()=>applyProfile('FORM'));
+  calcBtn.addEventListener(ev, calc);
+  resetBtn.addEventListener(ev, resetAll);
+});
+
 // whenever any of these change, recompute readiness/glow
 [dateEl, tzDepEl, tzArrEl, offShowEl, offBriefEl, offStepEl, offEngEl]
   .forEach(el => el.addEventListener('change', validateInputs));
