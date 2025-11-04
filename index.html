@@ -99,14 +99,22 @@
   box-shadow: none;
 }
 
-/* FDP Notice Pill — stays perfectly centered on all screen sizes */
+/* FDP Notice Pill — centered neatly between Timeline and Copy, never overlaps buttons */
+.section-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* prevents overlap on small screens */
+}
+
 #fdpNotice {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;                     /* prevent blocking Copy clicks */
-  z-index: 1;
+  position: relative;              /* normal flow instead of absolute */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* No media query override — same layout for mobile and desktop */
