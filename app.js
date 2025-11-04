@@ -96,7 +96,7 @@ function addCalcLedOutline(){
   const btn = document.getElementById('calc');
   if (!btn) return;
 
-  // remove any prior overlay (hot reloads)
+  // clean up if re-adding
   btn.querySelectorAll('.led-outline').forEach(n => n.remove());
 
   const svgNS = 'http://www.w3.org/2000/svg';
@@ -106,24 +106,35 @@ function addCalcLedOutline(){
   svg.setAttribute('preserveAspectRatio', 'none');
   svg.setAttribute('aria-hidden', 'true');
 
-  const cs  = getComputedStyle(btn);
+  const cs = getComputedStyle(btn);
   const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
   const h   = btn.getBoundingClientRect().height || 44;
-  const rxp = Math.max(0, Math.min(25, (rPx / h) * 100));
+  const rPct = Math.max(0, Math.min(24, (rPx / h) * 100));
 
+  // optional faint base ring
+  const base = document.createElementNS(svgNS, 'rect');
+  base.setAttribute('class', 'base');
+  base.setAttribute('x', '1.25');
+  base.setAttribute('y', '1.25');
+  base.setAttribute('width',  '97.5');
+  base.setAttribute('height', '97.5');
+  base.setAttribute('rx', rPct);
+  base.setAttribute('ry', rPct);
+  base.setAttribute('pathLength', '100');
+
+  // bright moving runner
   const runner = document.createElementNS(svgNS, 'rect');
   runner.setAttribute('class', 'runner');
   runner.setAttribute('x', '1.25');
   runner.setAttribute('y', '1.25');
-  runner.setAttribute('width', '97.5');
+  runner.setAttribute('width',  '97.5');
   runner.setAttribute('height', '97.5');
-  runner.setAttribute('rx', rxp);
-  runner.setAttribute('ry', rxp);
+  runner.setAttribute('rx', rPct);
+  runner.setAttribute('ry', rPct);
   runner.setAttribute('pathLength', '100');
-
-  // 🔒 hard-stop the black fill no matter what
   runner.setAttribute('fill', 'none');
 
+  svg.appendChild(base);      // safe to keep or remove if you don’t want it
   svg.appendChild(runner);
   btn.appendChild(svg);
 }
