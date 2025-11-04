@@ -139,62 +139,47 @@
 
 
 /* Calculate Button Behavior LED Chasing its tail */
+/* Keep your existing base/ready styles as-is, but ensure radius is set */
 #calc {
+  --radius: 10px;                      /* match your inline radius */
+  border-radius: var(--radius);
   transition: background .2s ease, opacity .2s ease;
-  opacity: .6;
-  background: #15803d;
-  cursor: default;
-  border-radius: 10px;              /* make sure this matches your inline style */
 }
 
-#calc.ready {
-  opacity: 1;
-  background: #22c55e;
-  cursor: pointer;
+#calc.ready      { opacity: 1; background:#22c55e; cursor:pointer; }
+#calc            { opacity: .6; background:#15803d; cursor:default; }
+
+/* LED outline (SVG overlay) */
+#calc { position: relative; overflow: visible; }
+#calc .led-outline {
+  position: absolute;
+  inset: -3px;                         /* sit just outside the button edge */
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  pointer-events: none;
+  display: none;                       /* only show in needs-run */
 }
 
-/* ===== LED chaser ring (thin outline that loops around) ===== */
-#calc.ready.needs-run {
-  position: relative;               /* anchor pseudo element */
-  z-index: 0;
+/* Only show when inputs changed */
+#calc.ready.needs-run .led-outline { display: block; }
+
+#calc .led-outline rect {
+  fill: none;
+  stroke: #facc15;                     /* LED color */
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(250,204,21,.6));
+  vector-effect: non-scaling-stroke;
+
+  /* Path is normalized with pathLength so percentages work on any size */
+  pathLength: 100;                     /* perimeter treated as 100 units */
+  stroke-dasharray: 8 92;              /* lit 8% + gap 92% */
+  animation: calcChase 1.1s linear infinite;
 }
 
-/* Draw only a 2px ring, with a small bright segment that rotates */
-#calc.ready.needs-run::before{
-  content:"";
-  position:absolute;
-  inset:0;                          /* flush with the button edge */
-  border-radius: 10px;              /* match #calc radius */
-  padding:2px;                      /* ring thickness */
-  background:
-    conic-gradient(
-      from 0deg,
-      #facc15 0 10deg,              /* the “LED” segment length */
-      transparent 10deg 360deg
-    );
-  /* Mask to keep ONLY a thin ring (cut out the center) */
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: calcRingSpin 1.25s linear infinite;
-  pointer-events:none;
+@keyframes calcChase {
+  to { stroke-dashoffset: -100; }      /* travel one full perimeter */
 }
-
-/* Optional subtle constant outline under the runner */
-#calc.ready.needs-run::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:10px;
-  box-shadow: 0 0 0 1px rgba(250,204,21,.35) inset;
-  pointer-events:none;
-}
-
-/* Rotate the ring */
-@keyframes calcRingSpin { to { transform: rotate(360deg); } }
-
 
 button:enabled { cursor: pointer; }
 
