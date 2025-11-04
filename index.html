@@ -75,8 +75,21 @@
   line-height:1;
   cursor:pointer;
 }
-.section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }
+/* .section-bar .copy-btn:disabled{ opacity:.5; cursor:default; }*/
+.section-bar {
+  position: relative;
+}
 
+/* Center the FDP Notice pill horizontally within the section-bar */
+#fdpNotice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;   /* don’t block Copy button clicks */
+  z-index: 2;             /* ensure it appears above the bar */
+}
+    
     /* FDP Notice Pill */
 .notice {
   display: none;
@@ -190,14 +203,6 @@ input.ok {
     0 0 10px 2px rgba(250, 204, 21, 0.5),         /* warm yellow outer glow */
     inset 0 0 4px rgba(250, 204, 21, 0.3);        /* soft inner tint */
   transition: box-shadow 0.3s ease, border 0.3s ease;
-}
-
-   #fdpNotice {
-  display: none;              /* stays hidden until triggered */
-  margin: 0.6rem auto;        /* <-- centers horizontally */
-  text-align: center;
-  width: fit-content;         /* keeps pill width tight to its text */
-  transition: all 0.3s ease;  /* smooth fade in/out if you like */
 }
  
     
