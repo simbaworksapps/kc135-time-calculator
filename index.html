@@ -138,51 +138,56 @@
 }
 
 
-    /* === Calculate button states === */
+/* Calculate Button Behavior LED Chasing its tail */
 #calc {
-  transition: background .2s ease, opacity .2s ease, box-shadow .2s ease;
+  transition: background .2s ease, opacity .2s ease;
   opacity: .6;
-  background: #15803d;        /* subdued (disarmed) */
+  background: #15803d;
   cursor: default;
 }
 
 #calc.ready {
   opacity: 1;
-  background: #22c55e;        /* bright green (ready) */
+  background: #22c55e;
   cursor: pointer;
-  box-shadow: none;
 }
 
-/* === When inputs change since last run (enhanced gold+green glow) === */
+/* ==== LED runner around the button when inputs changed ==== */
 #calc.ready.needs-run {
-  box-shadow:
-    0 0 18px 4px rgba(255, 215, 0, 0.9),   /* vivid gold edge */
-    0 0 28px 10px rgba(34, 197, 94, 0.8),  /* rich green aura */
-    inset 0 0 10px rgba(255, 255, 180, 0.3);
-  animation: calcPulse 1.8s ease-in-out infinite;
-  transition: box-shadow 0.3s ease;
+  position: relative;           /* anchor the pseudo element */
+  z-index: 0;                   /* create a stacking context */
 }
 
-/* “Breathing” glow animation */
-@keyframes calcPulse {
-  0% {
-    box-shadow:
-      0 0 10px 2px rgba(255, 215, 0, 0.7),
-      0 0 18px 6px rgba(34, 197, 94, 0.6),
-      inset 0 0 6px rgba(255, 255, 200, 0.2);
-  }
-  50% {
-    box-shadow:
-      0 0 25px 6px rgba(255, 215, 0, 1),
-      0 0 35px 12px rgba(34, 197, 94, 0.9),
-      inset 0 0 12px rgba(255, 255, 200, 0.4);
-  }
-  100% {
-    box-shadow:
-      0 0 10px 2px rgba(255, 215, 0, 0.7),
-      0 0 18px 6px rgba(34, 197, 94, 0.6),
-      inset 0 0 6px rgba(255, 255, 200, 0.2);
-  }
+/* The animated border “chasing its tail” */
+#calc.ready.needs-run::before {
+  content: "";
+  position: absolute;
+  inset: -3px;                  /* how far the ring sits outside the edge */
+  border-radius: 12px;          /* match your button radius + outside space */
+  background: conic-gradient(
+    from 0deg,
+    #facc15 0 12%,              /* the “LED” segment */
+    transparent 12% 100%        /* the rest of the track */
+  );
+  animation: calcRingSpin 1.25s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(250,204,21,.55)); /* soft halo */
+  z-index: -1;                  /* sit behind the button so center stays clean */
+  pointer-events: none;
+}
+
+/* Optional: a faint, always-on outline while the runner spins */
+#calc.ready.needs-run::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(250, 204, 21, .4) inset;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes calcRingSpin {
+  to { transform: rotate(360deg); }
 }
 
 button:enabled { cursor: pointer; }
