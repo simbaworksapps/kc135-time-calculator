@@ -138,23 +138,30 @@
 }
 
 
-/* Default Calculate button */
-#calc {
-  border: 2px solid transparent;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Base calc button */
+#calc{
+  background:#15803d;        /* subdued green when not ready */
+  color:#0b1220;
+  border:1px solid transparent;
+  border-radius:10px;
+  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
 }
 
-/* Highlight when active (ready to calculate) */
-#calc.ready.needs-run {
-  border-color: #facc15; /* bright yellow */
-  box-shadow: 0 0 12px 2px rgba(250, 204, 21, 0.8);
+/* Ready state (enabled) */
+#calc.ready{ background:#22c55e; }
+
+/* Your yellow highlight when inputs changed */
+#calc.ready.needs-run{
+  border-color:#facc15;
+  box-shadow:0 0 12px 2px rgba(250,204,21,.8);
 }
 
-/* Optional: subdued when inactive */
-#calc:disabled {
-  border-color: transparent;
-  box-shadow: none;
-  opacity: 0.6;
+/* Disabled look */
+#calc:disabled{
+  opacity:.6;
+  background:#134e24;
+  border-color:transparent;
+  box-shadow:none;
 }
 
 button:enabled { cursor: pointer; }
