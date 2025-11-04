@@ -102,11 +102,14 @@ function addCalcLedOutline(){
   svg.setAttribute('viewBox', '0 0 100 100');
   svg.setAttribute('preserveAspectRatio', 'none');
 
-  // Compute rx from the button’s CSS border-radius so the SVG corners match
+  // add this line:
+  svg.setAttribute('aria-hidden', 'true');
+
+  // Compute rx from the button’s CSS border-radius so corners match
   const cs = getComputedStyle(btn);
-  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;           // fallback to 10px
-  const h = btn.getBoundingClientRect().height || 44;             // button height in px
-  const rxPercent = Math.max(0, Math.min(25, (rPx / h) * 100));   // convert px → % of viewBox
+  const rPx = parseFloat(cs.borderTopLeftRadius) || 10;
+  const h = btn.getBoundingClientRect().height || 44;
+  const rxPercent = Math.max(0, Math.min(25, (rPx / h) * 100));
 
   const rect = document.createElementNS(svgNS, 'rect');
   rect.setAttribute('x', '1.25');
