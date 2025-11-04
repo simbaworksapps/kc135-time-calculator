@@ -269,7 +269,7 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   line('Brief', brief, offDep, `T/O−${hmm(Number(offBriefEl.value||0))}`);
   line('Step', step, offDep, `T/O−${hmm(Number(offStepEl.value||0))}`);
   line('Eng St', eng, offDep, `T/O−${hmm(Number(offEngEl.value||0))}`);
-  lineDual('T/O', to, offDep, null, 'Zulu');
+  lineDual('T/O', to, offDep, null, tzLabelFromOffset(offDep));
 
   const durLine = document.createElement('div'); durLine.className='line';
   const dh = String(Math.floor(dur/60)).padStart(2,'0'), dm = String(dur%60).padStart(2,'0');
