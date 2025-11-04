@@ -76,23 +76,26 @@
 .section-bar .copy-btn {
   grid-column: 3;
   justify-self: end;
-  width: auto !important;                   
+  width: auto !important;
   height: 42px;
   padding: 10px 18px;
   border-radius: 12px;
-  background: #22c55e;                     /* bright green (active) */
+  background: #15803d;        /* subdued, same as Calc default */
   color: #0b1220;
   border: none;
   line-height: 1;
-  cursor: pointer;
+  cursor: default;
+  opacity: 0.6;               /* slightly transparent like Calc */
+  box-shadow: none;
   transition: background 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Subdued state when disabled */
-.section-bar .copy-btn:disabled {
-  opacity: 0.5;
-  background: #15803d;                     /* darker green */
-  cursor: default;
+/* When Copy is active (enabled and ready) */
+.section-bar .copy-btn.ready,
+.section-bar .copy-btn:not(:disabled) {
+  background: #22c55e;        /* bright green like Calc ready state */
+  cursor: pointer;
+  opacity: 1;
   box-shadow: none;
 }
 
