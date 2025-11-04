@@ -69,25 +69,29 @@
   min-width:0;
 }
 
-/* Copy button (right) */
-.section-bar .copy-btn{
-  width:auto !important;
-  height:42px;
-  padding:10px 18px;
-  border-radius:12px;
-  background:#15803d;
-  color:#0b1220;
-  border:none;
-  line-height:1;
-  cursor:default;
-  opacity:.6;
-  box-shadow:none;
-  transition:background .25s ease, opacity .25s ease, box-shadow .25s ease;
+.section-bar .copy-btn {
+  grid-column: 3;
+  justify-self: end;
+  width: auto !important;
+  height: 42px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #15803d;        /* match subdued Calculate */
+  color: #0b1220;
+  border: none;
+  line-height: 1;
+  cursor: default;
+  opacity: 0.6;               /* same subtle fade as Calculate */
+  box-shadow: none;
+  transition: background 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
 }
-.section-bar .copy-btn:not(:disabled){
-  background:#22c55e;
-  cursor:pointer;
-  opacity:1;
+
+/* Active (ready) Copy button */
+.section-bar .copy-btn.ready,
+.section-bar .copy-btn:not(:disabled) {
+  background: #22c55e;        /* same bright green */
+  cursor: pointer;
+  opacity: 1;
 }
     
 #fdpNotice {
