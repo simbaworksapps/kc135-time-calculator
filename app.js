@@ -131,7 +131,7 @@ function addCalcLedOutline(){
   runner.setAttribute('height', '97.5');
   runner.setAttribute('rx', rPct);
   runner.setAttribute('ry', rPct);
-  runner.setAttribute('pathLength', '100');
+  runner.setAttribute('pathLength', '1000');
   runner.setAttribute('fill', 'none');
 
   svg.appendChild(base);      // safe to keep or remove if you don’t want it
