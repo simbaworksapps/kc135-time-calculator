@@ -138,6 +138,8 @@ function openDefaultsModal(){
     hydrateModalOptions();
     el.modal.style.display = 'block';
 
+    void el.modal.offsetHeight; // force layout on mobile
+
     // Set values on the next frame so mobile paints correctly
     requestAnimationFrame(() => {
       const d = loadDefaults();
