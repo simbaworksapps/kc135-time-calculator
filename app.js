@@ -664,6 +664,26 @@ function buildOffsetOptions(select, def){
   }
 }
 
+function applySelectVisibilityFix(){
+  const selects = [tzDepEl, tzArrEl, offShowEl, offBriefEl, offStepEl, offEngEl];
+
+  selects.forEach(sel=>{
+    // Apply the paint-fix when collapsed
+    sel.classList.add('select-fix');
+
+    // Remove before opening the native picker so options render normally
+    const removeFix = () => sel.classList.remove('select-fix');
+    const addFix = () => sel.classList.add('select-fix');
+
+    sel.addEventListener('mousedown', removeFix, {passive:true});
+    sel.addEventListener('touchstart', removeFix, {passive:true});
+
+    // Re-apply after selection closes
+    sel.addEventListener('blur', addFix, {passive:true});
+    sel.addEventListener('change', addFix, {passive:true});
+  });
+}
+
 function boot(){
   genTZOptions(tzDepEl);
   genTZOptions(tzArrEl);
@@ -677,8 +697,10 @@ function boot(){
   tzDepEl.value = String(off);
   tzArrEl.value = String(off);
 
-  resetAll(); // applies SINGLE/BASIC inside and clears UI
+  // <<< add this line
+  applySelectVisibilityFix();
 
+  resetAll();
   updateNowPanel();
   setInterval(updateNowPanel, 30000);
 
