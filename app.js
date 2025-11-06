@@ -18,7 +18,7 @@ const SC = (obj) => (typeof structuredClone === 'function'
   ? structuredClone(obj)
   : JSON.parse(JSON.stringify(obj)));
 
-const DEFAULTS_KEY = 'kc135.defaults.v1';
+const DEFAULTS_KEY = 'kc135.defaults.v2';
 
 const el = {
   modal: $('defaultsModal'),
@@ -28,40 +28,42 @@ const el = {
   reset: $('defaultsReset'),
 
   // Modal dropdowns
-  d_single_show: $('d_single_show'),
+  d_single_show:  $('d_single_show'),
   d_single_brief: $('d_single_brief'),
-  d_single_step: $('d_single_step'),
-  d_single_eng: $('d_single_eng'),
+  d_single_step:  $('d_single_step'),
+  d_single_eng:   $('d_single_eng'),
 
-  d_form_show: $('d_form_show'),
+  d_form_show:  $('d_form_show'),
   d_form_brief: $('d_form_brief'),
-  d_form_step: $('d_form_step'),
-  d_form_eng: $('d_form_eng'),
+  d_form_step:  $('d_form_step'),
+  d_form_eng:   $('d_form_eng'),
 };
 
-// Fallback defaults shown on first load
-const FALLBACK_DEFAULTS = {
-  single:   { show: '3:15', brief: '2:45', step: '2:00', eng: '0:30' },
-  formation:{ show: '3:30', brief: '3:00', step: '2:15', eng: '0:30' },
+// Always-available zero set (minutes, not H:MM)
+const ZERO_DEFAULTS = {
+  enabled: false,
+  single:   { show: 0, brief: 0, step: 0, eng: 0 },
+  formation:{ show: 0, brief: 0, step: 0, eng: 0 },
 };
 
 function loadDefaults(){
   try {
-    return JSON.parse(localStorage.getItem(DEFAULTS_KEY)) || SC(FALLBACK_DEFAULTS);
+    return JSON.parse(localStorage.getItem(DEFAULTS_KEY)) || SC(ZERO_DEFAULTS);
   } catch {
-    return SC(FALLBACK_DEFAULTS);
+    return SC(ZERO_DEFAULTS);
   }
 }
 
 function saveDefaults(obj){
-  localStorage.setItem(DEFAULTS_KEY, JSON.stringify(obj));
+  try { localStorage.setItem(DEFAULTS_KEY, JSON.stringify(obj)); }
+  catch (_) { /* no-op: defaults just won't persist */ }
 }
 
 // Copies the live dropdown's options into the modal dropdowns
 function cloneOptions(fromSelect, toSelect){
   toSelect.innerHTML = '';
   [...fromSelect.options].forEach(o=>{
-    let opt = document.createElement('option');
+    const opt = document.createElement('option');
     opt.value = o.value;
     opt.textContent = o.textContent;
     toSelect.appendChild(opt);
@@ -70,45 +72,46 @@ function cloneOptions(fromSelect, toSelect){
 
 // Sync modal options with your app's real dropdown options
 function hydrateModalOptions(){
-  cloneOptions(offShowEl,  el.d_single_show); cloneOptions(offShowEl,  el.d_form_show);
-  cloneOptions(offBriefEl, el.d_single_brief);cloneOptions(offBriefEl, el.d_form_brief);
-  cloneOptions(offStepEl,  el.d_single_step); cloneOptions(offStepEl,  el.d_form_step);
-  cloneOptions(offEngEl,   el.d_single_eng);  cloneOptions(offEngEl,   el.d_form_eng);
+  cloneOptions(offShowEl,  el.d_single_show);  cloneOptions(offShowEl,  el.d_form_show);
+  cloneOptions(offBriefEl, el.d_single_brief); cloneOptions(offBriefEl, el.d_form_brief);
+  cloneOptions(offStepEl,  el.d_single_step);  cloneOptions(offStepEl,  el.d_form_step);
+  cloneOptions(offEngEl,   el.d_single_eng);   cloneOptions(offEngEl,   el.d_form_eng);
 }
 
-// Loads saved defaults into the modal UI
+// Load saved defaults into the modal UI
 function setModalFromDefaults(d){
-  el.d_single_show.value  = d.single.show;
-  el.d_single_brief.value = d.single.brief;
-  el.d_single_step.value  = d.single.step;
-  el.d_single_eng.value   = d.single.eng;
+  const s = d.single, f = d.formation;
+  el.d_single_show.value  = String(s.show);
+  el.d_single_brief.value = String(s.brief);
+  el.d_single_step.value  = String(s.step);
+  el.d_single_eng.value   = String(s.eng);
 
-  el.d_form_show.value  = d.formation.show;
-  el.d_form_brief.value = d.formation.brief;
-  el.d_form_step.value  = d.formation.step;
-  el.d_form_eng.value   = d.formation.eng;
+  el.d_form_show.value    = String(f.show);
+  el.d_form_brief.value   = String(f.brief);
+  el.d_form_step.value    = String(f.step);
+  el.d_form_eng.value     = String(f.eng);
 }
 
 function getDefaultsFromModal(){
   return {
+    enabled: true,
     single: {
-      show: el.d_single_show.value,
-      brief: el.d_single_brief.value,
-      step: el.d_single_step.value,
-      eng:  el.d_single_eng.value,
+      show:  parseInt(el.d_single_show.value  || '0', 10),
+      brief: parseInt(el.d_single_brief.value || '0', 10),
+      step:  parseInt(el.d_single_step.value  || '0', 10),
+      eng:   parseInt(el.d_single_eng.value   || '0', 10),
     },
     formation: {
-      show: el.d_form_show.value,
-      brief: el.d_form_brief.value,
-      step: el.d_form_step.value,
-      eng:  el.d_form_eng.value,
+      show:  parseInt(el.d_form_show.value  || '0', 10),
+      brief: parseInt(el.d_form_brief.value || '0', 10),
+      step:  parseInt(el.d_form_step.value  || '0', 10),
+      eng:   parseInt(el.d_form_eng.value   || '0', 10),
     }
   };
 }
 
 // Opens the modal
 function openDefaultsModal(){
-  // wait until the live selects have options, then hydrate the modal
   const ready = () =>
     [offShowEl, offBriefEl, offStepEl, offEngEl].every(s => s && s.options.length > 0);
 
@@ -127,48 +130,33 @@ function closeDefaultsModal(){
 
 // Modal button actions
 el.btn.addEventListener('click', openDefaultsModal);
-el.cancel.addEventListener('click', closeDefaultsModal);
-el.reset.addEventListener('click', () => {
-  setModalFromDefaults(SC(FALLBACK_DEFAULTS));
-});
+
+// Save -> enable defaults and reflect immediately
 el.save.addEventListener('click', () => {
-  saveDefaults(getDefaultsFromModal());
+  const newDefs = getDefaultsFromModal();
+  saveDefaults(newDefs);
+  const isForm = formBtn.classList.contains('active');
+  applyProfile(isForm ? 'FORM' : 'SINGLE');
   closeDefaultsModal();
 });
 
-// Apply stored defaults when SINGLE SHIP / FORMATION is clicked
-function applyProfileDefaults(profile){
-  const d = loadDefaults();
-  const src = d[profile];
-  if(!src) return;
+// Reset -> disable defaults and show zeros now
+el.reset.addEventListener('click', () => {
+  saveDefaults(SC(ZERO_DEFAULTS));
+  const isForm = formBtn.classList.contains('active');
+  applyProfile(isForm ? 'FORM' : 'SINGLE');
+  setModalFromDefaults(loadDefaults()); // keep modal showing zeros
+});
 
-  offShowEl.value  = src.show;
-  offBriefEl.value = src.brief;
-  offStepEl.value  = src.step;
-  offEngEl.value   = src.eng;
+// Cancel -> just close; do not modify saved defaults
+el.cancel.addEventListener('click', () => {
+  closeDefaultsModal();
+});
 
-  // fire “change” on all 4 selects so your main code updates automatically
-  ['change'].forEach(evt=>{
-    offShowEl.dispatchEvent(new Event(evt));
-    offBriefEl.dispatchEvent(new Event(evt));
-    offStepEl.dispatchEvent(new Event(evt));
-    offEngEl.dispatchEvent(new Event(evt));
-  });
-}
-
-// Hook the profile buttons
-singleBtn.addEventListener('click', () => applyProfileDefaults('single'));
-formBtn.addEventListener('click',   () => applyProfileDefaults('formation'));
-
-// First-run behavior: show modal if never seen
-(function firstRunPrompt(){
-  const seenKey = DEFAULTS_KEY + '.seen';
-  if(!localStorage.getItem(seenKey)){
-    if(!localStorage.getItem(DEFAULTS_KEY)){
-      saveDefaults(SC(FALLBACK_DEFAULTS));
-    }
-    openDefaultsModal();
-    localStorage.setItem(seenKey, '1');
+// First-run behavior: no forced modal. Start with zeros unless the user saves defaults later.
+(function primeDefaults(){
+  if (!localStorage.getItem(DEFAULTS_KEY)) {
+    saveDefaults(SC(ZERO_DEFAULTS));
   }
 })();
 
@@ -272,19 +260,31 @@ function getCalcSignature(){
 }
 let lastRunSig = ''; // updated after a successful calc()
 
-
-const PRESETS = { SINGLE:{show:195,brief:165,step:120,eng:30}, FORM:{show:210,brief:180,step:120,eng:30} };
 let mode='BASIC', profile='SINGLE';
 
 function applyProfile(p){
   profile = p;
-  const cfg = PRESETS[p];
-  offShowEl.value = String(cfg.show);
-  offBriefEl.value = String(cfg.brief);
-  offStepEl.value = String(cfg.step);
-  offEngEl.value = String(cfg.eng);
-  setActive(singleBtn, p==='SINGLE'); setActive(formBtn, p==='FORM');
+  const d = loadDefaults();
+  const src = d.enabled ? (p === 'SINGLE' ? d.single : d.formation)
+                        : ZERO_DEFAULTS[p === 'SINGLE' ? 'single' : 'formation'];
+
+  offShowEl.value  = String(src.show);
+  offBriefEl.value = String(src.brief);
+  offStepEl.value  = String(src.step);
+  offEngEl.value   = String(src.eng);
+
+  // notify dependents
+  ['change'].forEach(evt=>{
+    offShowEl.dispatchEvent(new Event(evt));
+    offBriefEl.dispatchEvent(new Event(evt));
+    offStepEl.dispatchEvent(new Event(evt));
+    offEngEl.dispatchEvent(new Event(evt));
+  });
+
+  setActive(singleBtn, p === 'SINGLE');
+  setActive(formBtn,   p === 'FORM');
 }
+
 function applyMode(m){
   mode = m;
   setActive(basicBtn, m==='BASIC'); setActive(augBtn, m==='AUG');
@@ -548,25 +548,17 @@ if (notice) {
 }
 
 ;['click','touchend'].forEach(ev=>{
-  basicBtn.addEventListener(ev, ()=>applyMode('BASIC'));
-  augBtn.addEventListener(ev, ()=>applyMode('AUG'));
-  singleBtn.addEventListener(ev, ()=>applyProfile('SINGLE'));
-  formBtn.addEventListener(ev, ()=>applyProfile('FORM'));
-  calcBtn.addEventListener(ev, calc);
+  basicBtn.addEventListener(ev, ()=>{ applyMode('BASIC');  validateInputs(); });
+  augBtn.addEventListener(ev,   ()=>{ applyMode('AUG');    validateInputs(); });
+  singleBtn.addEventListener(ev,()=>{ applyProfile('SINGLE'); validateInputs(); });
+  formBtn.addEventListener(ev,  ()=>{ applyProfile('FORM');   validateInputs(); });
+  calcBtn.addEventListener(ev,  calc);
   resetBtn.addEventListener(ev, resetAll);
 });
 
 // whenever any of these change, recompute readiness/glow
 [dateEl, tzDepEl, tzArrEl, offShowEl, offBriefEl, offStepEl, offEngEl]
   .forEach(el => el.addEventListener('change', validateInputs));
-
-// mode/profile buttons should also trigger validate
-['click','touchend'].forEach(ev => {
-  basicBtn.addEventListener(ev, () => { applyMode('BASIC');  validateInputs(); });
-  augBtn.addEventListener(ev,   () => { applyMode('AUG');    validateInputs(); });
-  singleBtn.addEventListener(ev,() => { applyProfile('SINGLE'); validateInputs(); });
-  formBtn.addEventListener(ev,  () => { applyProfile('FORM');   validateInputs(); });
-});
 
 
 // --- Ensure the lion badge link works inside the PWA (iOS/Android) ---
@@ -628,12 +620,24 @@ function buildOffsetOptions(select, def){
 }
 
 function boot(){
-  genTZOptions(tzDepEl); genTZOptions(tzArrEl);
-  buildOffsetOptions(offShowEl,195); buildOffsetOptions(offBriefEl,165); buildOffsetOptions(offStepEl,120); buildOffsetOptions(offEngEl,30);
-  const off = deviceOffsetHours(); tzDepEl.value=String(off); tzArrEl.value=String(off);
-  applyProfile('SINGLE'); applyMode('BASIC'); resetAll();
-  updateNowPanel(); setInterval(updateNowPanel, 30000);
+  genTZOptions(tzDepEl);
+  genTZOptions(tzArrEl);
 
-validateInputs();
+  buildOffsetOptions(offShowEl,195);
+  buildOffsetOptions(offBriefEl,165);
+  buildOffsetOptions(offStepEl,120);
+  buildOffsetOptions(offEngEl,30);
+
+  const off = deviceOffsetHours();
+  tzDepEl.value = String(off);
+  tzArrEl.value = String(off);
+
+  resetAll(); // applies SINGLE/BASIC inside and clears UI
+
+  updateNowPanel();
+  setInterval(updateNowPanel, 30000);
+
+  validateInputs();
 }
+
 boot();
