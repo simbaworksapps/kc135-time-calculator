@@ -108,9 +108,17 @@ function getDefaultsFromModal(){
 
 // Opens the modal
 function openDefaultsModal(){
-  hydrateModalOptions();
-  setModalFromDefaults(loadDefaults());
-  el.modal.style.display = 'block';
+  // wait until the live selects have options, then hydrate the modal
+  const ready = () =>
+    [offShowEl, offBriefEl, offStepEl, offEngEl].every(s => s && s.options.length > 0);
+
+  const spin = () => {
+    if (!ready()) { requestAnimationFrame(spin); return; }
+    hydrateModalOptions();
+    setModalFromDefaults(loadDefaults());
+    el.modal.style.display = 'block';
+  };
+  spin();
 }
 
 function closeDefaultsModal(){
