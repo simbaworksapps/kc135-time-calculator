@@ -123,6 +123,24 @@
   cursor:pointer;
   opacity:1;
 }
+
+    /* Ensure selected text is visible in dark UI on mobile */
+#defaultsModal select {
+  color: #e5e7eb;
+  background: #0b1220;
+  -webkit-text-fill-color: #e5e7eb; /* iOS/Android WebKit */
+}
+
+/* Some Androids use option color for the visible value */
+#defaultsModal option {
+  color: #e5e7eb;
+  background: #0b1220;
+}
+
+/* Small layout help so values don't clip on narrow phones */
+#defaultsModal select {
+  min-width: 0;
+}
     
 #fdpNotice {
   position: relative;              /* normal flow instead of absolute */
