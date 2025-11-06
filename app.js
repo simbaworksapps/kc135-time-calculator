@@ -46,6 +46,23 @@ const ZERO_DEFAULTS = {
   formation:{ show: 0, brief: 0, step: 0, eng: 0 },
 };
 
+const PROMPT_KEY = 'kc135.defaults.prompted.v1';
+
+function markPrompted(){
+  try { localStorage.setItem(PROMPT_KEY, '1'); } catch(_) {}
+}
+
+function maybeAskForDefaults(){
+  try {
+    const already = localStorage.getItem(PROMPT_KEY);
+    const d = loadDefaults();
+    if (already || d.enabled) return;   // do not ask if user already chose or has saved defaults
+    // show once
+    openDefaultsModal();
+  } catch(_) {}
+}
+
+
 function loadDefaults(){
   try {
     return JSON.parse(localStorage.getItem(DEFAULTS_KEY)) || SC(ZERO_DEFAULTS);
@@ -135,21 +152,22 @@ el.btn.addEventListener('click', openDefaultsModal);
 el.save.addEventListener('click', () => {
   const newDefs = getDefaultsFromModal();
   saveDefaults(newDefs);
+  markPrompted();
   const isForm = formBtn.classList.contains('active');
   applyProfile(isForm ? 'FORM' : 'SINGLE');
   closeDefaultsModal();
 });
 
-// Reset -> disable defaults and show zeros now
 el.reset.addEventListener('click', () => {
   saveDefaults(SC(ZERO_DEFAULTS));
+  markPrompted();
   const isForm = formBtn.classList.contains('active');
   applyProfile(isForm ? 'FORM' : 'SINGLE');
-  setModalFromDefaults(loadDefaults()); // keep modal showing zeros
+  setModalFromDefaults(loadDefaults());
 });
 
-// Cancel -> just close; do not modify saved defaults
 el.cancel.addEventListener('click', () => {
+  markPrompted();
   closeDefaultsModal();
 });
 
@@ -638,6 +656,7 @@ function boot(){
   setInterval(updateNowPanel, 30000);
 
   validateInputs();
+  setTimeout(maybeAskForDefaults, 0);
 }
 
 boot();
