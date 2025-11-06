@@ -243,7 +243,15 @@ input.ok {
     inset 0 0 4px rgba(250, 204, 21, 0.3);        /* soft inner tint */
   transition: box-shadow 0.3s ease, border 0.3s ease;
 }
- 
+
+    /* Force visible selected-value text in collapsed <select> on mobile */
+.select-fix{
+  color: transparent !important;            /* hide the actual glyph color */
+  text-shadow: 0 0 0 #e5e7eb !important;    /* paint the text with shadow color */
+  background: #0b1220 !important;
+  -webkit-text-fill-color: #e5e7eb !important;
+}
+
     
   </style>
 
