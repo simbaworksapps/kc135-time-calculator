@@ -126,17 +126,24 @@
 
 /* === Defaults modal: final minimal rules === */
 
-/* Single-column layout for the two cards (Single Ship | Formation) */
-#defaultsModal > div > div[style*="grid-template-columns"]{
-  grid-template-columns: 1fr !important;
-  gap: 20px !important; /* a little breathing room */
-}
-
-/* Label-above-select inside each card (remove the 110px label column) */
-#defaultsModal div[style*="grid-template-columns:110px"]{
-  grid-template-columns: 1fr !important;
+/* Side-by-side label + select */
+#defaultsModal .defaults-grid{
+  display: grid !important;
+  grid-template-columns: 110px 1fr !important;  /* label | select */
+  column-gap: 10px !important;
   row-gap: 8px !important;
-  column-gap: 0 !important;
+  align-items: center !important;
+}
+#defaultsModal .defaults-grid > label{
+  margin: 0; font-size: .9rem; color: #cbd5e1; white-space: nowrap;
+}
+#defaultsModal .defaults-grid > select{
+  width: 100%; min-width: 0; line-height: 1.2;
+  color:#e5e7eb; background:#0b1220; -webkit-text-fill-color:#e5e7eb;
+}
+/* Narrow fallback: stack on tiny phones */
+@media (max-width: 360px){
+  #defaultsModal .defaults-grid{ grid-template-columns: 1fr !important; }
 }
 
 /* Selects: always stretch and show readable text in dark UI */
