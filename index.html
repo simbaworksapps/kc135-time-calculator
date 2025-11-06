@@ -187,6 +187,7 @@ input.ok {
   </style>
 </head>
 
+
 <body>
   <header>
     <div class="head">
@@ -331,6 +332,50 @@ input.ok {
     });
   });
 </script>
+
+  <!-- Defaults Settings Button -->
+<button id="defaultsBtn" aria-label="Defaults settings"
+  style="position:fixed; right:14px; bottom:14px; z-index:50; padding:10px 12px; border-radius:9999px; border:1px solid #334155; background:#0f172a; color:#e2e8f0;">
+  ⚙️
+</button>
+
+<!-- Defaults Modal -->
+<div id="defaultsModal" style="display:none; position:fixed; inset:0; z-index:60; background:rgba(0,0,0,.6);">
+  <div style="max-width:720px; margin:6vh auto; background:#0b1220; color:#e5e7eb; border:1px solid #334155; border-radius:16px; padding:18px;">
+    <h2 style="font-size:20px; margin:0 0 12px;">Set Mission Profile Defaults</h2>
+    <p style="margin:0 0 16px; color:#cbd5e1;">Choose the default offsets for each profile. These apply when you tap SINGLE SHIP or FORMATION.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <!-- Single Ship -->
+      <div style="border:1px solid #334155; border-radius:12px; padding:12px;">
+        <h3 style="margin:0 0 8px; font-size:16px;">Single Ship</h3>
+        <div style="display:grid; grid-template-columns:110px 1fr; row-gap:8px; column-gap:8px;">
+          <label>Show</label>   <select id="d_single_show"></select>
+          <label>Brief</label>  <select id="d_single_brief"></select>
+          <label>Step</label>   <select id="d_single_step"></select>
+          <label>Eng Start</label> <select id="d_single_eng"></select>
+        </div>
+      </div>
+
+      <!-- Formation -->
+      <div style="border:1px solid #334155; border-radius:12px; padding:12px;">
+        <h3 style="margin:0 0 8px; font-size:16px;">Formation</h3>
+        <div style="display:grid; grid-template-columns:110px 1fr; row-gap:8px; column-gap:8px;">
+          <label>Show</label>   <select id="d_form_show"></select>
+          <label>Brief</label>  <select id="d_form_brief"></select>
+          <label>Step</label>   <select id="d_form_step"></select>
+          <label>Eng Start</label> <select id="d_form_eng"></select>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+      <button id="defaultsReset" style="padding:8px 10px; border:1px solid #475569; border-radius:10px; background:#0b1220; color:#e2e8f0;">Reset</button>
+      <button id="defaultsCancel" style="padding:8px 10px; border:1px solid #475569; border-radius:10px; background:#0b1220; color:#e2e8f0;">Cancel</button>
+      <button id="defaultsSave" style="padding:8px 12px; border:1px solid #10b981; border-radius:10px; background:#052e2b; color:#d1fae5;">Save</button>
+    </div>
+  </div>
+</div>
   
 </body>
 </html>
