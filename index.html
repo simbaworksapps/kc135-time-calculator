@@ -124,23 +124,38 @@
   opacity:1;
 }
 
-    /* Ensure selected text is visible in dark UI on mobile */
-#defaultsModal select {
-  color: #e5e7eb;
-  background: #0b1220;
-  -webkit-text-fill-color: #e5e7eb; /* iOS/Android WebKit */
+/* === Defaults modal: final minimal rules === */
+
+/* Single-column layout for the two cards (Single Ship | Formation) */
+#defaultsModal > div > div[style*="grid-template-columns"]{
+  grid-template-columns: 1fr !important;
+  gap: 20px !important; /* a little breathing room */
 }
 
-/* Some Androids use option color for the visible value */
-#defaultsModal option {
+/* Label-above-select inside each card (remove the 110px label column) */
+#defaultsModal div[style*="grid-template-columns:110px"]{
+  grid-template-columns: 1fr !important;
+  row-gap: 8px !important;
+  column-gap: 0 !important;
+}
+
+/* Selects: always stretch and show readable text in dark UI */
+#defaultsModal select{
+  width: 100% !important;
+  min-width: 0 !important;
+  display: block !important;
+  line-height: 1.2;
+  color: #e5e7eb;
+  background: #0b1220;
+  -webkit-text-fill-color: #e5e7eb;
+}
+
+/* Option text color on Android list UI */
+#defaultsModal option{
   color: #e5e7eb;
   background: #0b1220;
 }
 
-/* Small layout help so values don't clip on narrow phones */
-#defaultsModal select {
-  min-width: 0;
-}
 
 /* Ensure selected text shows up in dark mode on mobile for main selects */
 #off-show, #off-brief, #off-step, #off-eng,
@@ -252,44 +267,6 @@ input.ok {
   -webkit-text-fill-color: #e5e7eb !important;
 }
 
-/* --- Phone fixes for Defaults modal --- */
-
-/* Make the selects expand and show text properly */
-#defaultsModal select {
-  width: 100% !important;
-  min-width: 0 !important;
-  flex: 1 1 auto !important;
-  display: block !important;
-  line-height: 1.2;
-  text-indent: 0 !important;
-  padding-right: 2.25rem; /* space for chevron if any */
-}
-
-/* Let wrappers stretch too */
-#defaultsModal label,
-#defaultsModal .field,
-#defaultsModal .input-wrap,
-#defaultsModal .select-wrap {
-  width: 100% !important;
-  min-width: 0 !important;
-}
-
-/* On small screens, stack the two main columns (Single Ship | Formation) */
-@media (max-width: 640px) {
-  /* this targets the top-level 1fr 1fr grid inside the dialog */
-  #defaultsModal > div > div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Avoid stacking-context / clipping issues inside the modal */
-#defaultsModal,
-#defaultsModal * {
-  transform: none !important;
-  overflow: visible !important;
-}
-    
-    
   </style>
 
 </head>
@@ -454,7 +431,7 @@ input.ok {
       <!-- Single Ship -->
       <div style="border:1px solid #334155; border-radius:12px; padding:12px;">
         <h3 style="margin:0 0 8px; font-size:16px;">Single Ship</h3>
-        <div style="display:grid; grid-template-columns:110px 1fr; row-gap:8px; column-gap:8px;">
+        <div style="display:grid; grid-template-columns:1fr; row-gap:8px; column-gap:0;">
           <label>Show</label>   <select id="d_single_show"></select>
           <label>Brief</label>  <select id="d_single_brief"></select>
           <label>Step</label>   <select id="d_single_step"></select>
@@ -465,7 +442,7 @@ input.ok {
       <!-- Formation -->
       <div style="border:1px solid #334155; border-radius:12px; padding:12px;">
         <h3 style="margin:0 0 8px; font-size:16px;">Formation</h3>
-        <div style="display:grid; grid-template-columns:110px 1fr; row-gap:8px; column-gap:8px;">
+        <div style="display:grid; grid-template-columns:1fr; row-gap:8px; column-gap:0;">
           <label>Show</label>   <select id="d_form_show"></select>
           <label>Brief</label>  <select id="d_form_brief"></select>
           <label>Step</label>   <select id="d_form_step"></select>
