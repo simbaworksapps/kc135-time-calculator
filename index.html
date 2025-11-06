@@ -49,7 +49,7 @@
     .hint { color:#9ca3af; font-size:0.75rem; margin-left:6px; }
     .footer { margin:10px 0; text-align:center; color:#9ca3af; font-size:0.75rem; }
     .sticky-run { position:fixed; left:0; right:0; bottom:0; padding:10px; background:rgba(11,18,32,0.9); backdrop-filter: blur(6px); border-top:1px solid #111827; }
-    .sticky-run .row { grid-template-columns: 1fr 1fr; }
+    .sticky-run .row { grid-template-columns: 1fr auto 1fr; }
     .tiny { font-size:0.75rem; color:#9ca3af; margin-top:2px; }
     ::placeholder { color:#64748b; opacity:1; }
     .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
@@ -186,8 +186,6 @@ input.ok {
     
   </style>
 
-<script src="appjs" defer></script>
-
 </head>
 
 
@@ -290,7 +288,16 @@ input.ok {
   <div class="sticky-run">
     <div class="row">
       <button id="calc">Calculate</button>
-      <button id="reset">Reset</button>
+
+<button 
+  id="defaultsBtn" 
+  aria-label="Default Settings" 
+  style="margin:0 12px; padding:6px 10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#e2e8f0; font-size:16px;">
+  ⚙️
+</button>
+
+<button id="reset">Reset</button>
+
     </div>
   </div>
 
@@ -301,7 +308,6 @@ input.ok {
       });
     }
   </script>
-  <script src="app.js"></script>
 
 <script>
   // GA-safe wrapper (works even if gtag isn't ready yet)
@@ -335,12 +341,6 @@ input.ok {
     });
   });
 </script>
-
-  <!-- Defaults Settings Button -->
-<button id="defaultsBtn" aria-label="Defaults settings"
-  style="position:fixed; right:14px; bottom:14px; z-index:50; padding:10px 12px; border-radius:9999px; border:1px solid #334155; background:#0f172a; color:#e2e8f0;">
-  ⚙️
-</button>
 
 <!-- Defaults Modal -->
 <div id="defaultsModal" style="display:none; position:fixed; inset:0; z-index:60; background:rgba(0,0,0,.6);">
@@ -379,6 +379,8 @@ input.ok {
     </div>
   </div>
 </div>
+
+  <script src="app.js"></script>
   
 </body>
 </html>
