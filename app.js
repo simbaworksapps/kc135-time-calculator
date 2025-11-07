@@ -159,23 +159,24 @@ el.btn.addEventListener('click', openDefaultsModal);
 // Save -> enable defaults and reflect immediately
 el.save.addEventListener('click', () => {
   const newDefs = getDefaultsFromModal();
-  saveDefaults(newDefs);
+  saveDefaults(newDefs);         // persist only on Save
   markPrompted();
   const isForm = formBtn.classList.contains('active');
-  applyProfile(isForm ? 'FORM' : 'SINGLE');
+  applyProfile(isForm ? 'FORM' : 'SINGLE'); // reflect in main UI
   closeDefaultsModal();
 });
 
+// Reset -> only reset modal fields to zeros (no save, no apply)
 el.reset.addEventListener('click', () => {
-  saveDefaults(SC(ZERO_DEFAULTS));
-  markPrompted();
-  const isForm = formBtn.classList.contains('active');
-  applyProfile(isForm ? 'FORM' : 'SINGLE');
-  setModalFromDefaults(loadDefaults());
+  const z = SC(ZERO_DEFAULTS);
+  setModalFromDefaults(z);       // just update the modal controls
+  // do not save, do not applyProfile, do not markPrompted
 });
 
+// Cancel -> close without saving anything
 el.cancel.addEventListener('click', () => {
-  markPrompted();
+  // optional: remove this next line if you do not want to suppress the first-run prompt when user cancels
+  // markPrompted();
   closeDefaultsModal();
 });
 
