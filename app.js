@@ -511,21 +511,13 @@ if (copyBtn) copyBtn.disabled = false;
 
 updateFdpNotice(ld, fdpEnd);
   
-  // Smooth scroll to center "Sortie Dur" line for best timeline view
+// Scroll the timeline section to the top of the viewport
 setTimeout(() => {
-  const sortieLine = [...out.querySelectorAll('.line')]
-    .find(l => l.textContent.includes('Sortie Dur'));
-  if (!sortieLine) return;
-
-  const scroller = document.scrollingElement || document.documentElement;
-  const rect = sortieLine.getBoundingClientRect();
-  const offsetY = rect.top + window.pageYOffset - (window.innerHeight / 2) + (rect.height / 2);
-
-  scroller.scrollTo({
-    top: offsetY,
-    behavior: 'smooth'
-  });
-}, 300);
+  const header = document.querySelector('.section-bar') || out;
+  if (!header) return;
+  const y = header.getBoundingClientRect().top + window.pageYOffset - 8; // small padding
+  window.scrollTo({ top: y, behavior: 'smooth' });
+}, 0);
 
 // mark this state as the last successful run
 lastRunSig = getCalcSignature();
