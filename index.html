@@ -437,6 +437,25 @@ input.ok {
       gaEvent('calculate_tapped', { event_category: 'Interaction', event_label: 'Calculate pressed' });
     });
   });
+
+  // If user taps the disabled Calculate, jump to the first invalid input
+['pointerdown','click','touchend'].forEach(ev => {
+  document.addEventListener(ev, (e) => {
+    const btn = e.target && e.target.closest && e.target.closest('#calc');
+    if (!btn || !btn.disabled) return;        // only handle taps on the disabled Calc
+    e.preventDefault();                        // stop default "nothing happens"
+    // run validation so borders update, then focus the first offender
+    validateInputs();
+    setTimeout(() => {
+      if (!parseHM(toEl.value)) {
+        toEl.focus({ preventScroll: true });
+      } else if (parseDur(durEl.value) == null) {
+        durEl.focus({ preventScroll: true });
+      }
+    }, 0);
+  }, { capture: true, passive: false });
+});
+
 </script>
 
 <!-- Defaults Modal -->
