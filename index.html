@@ -295,13 +295,16 @@ input.ok {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
 }
 
-/* Offsets row labels should NOT override the base label styling */
-.row-4.tight-grid label{
-  font-size:inherit;
-  font-weight:inherit;
-  color:inherit;
-  letter-spacing:inherit;
-  margin-bottom:4px;
+/* === Offsets inherit global label styling === */
+.row-4.tight-grid label {
+  all: unset;
+  display: block;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  margin-bottom: 4px;
+  line-height: 1.2;
 }
 
   </style>
