@@ -252,15 +252,33 @@ function fmtLocalWithOffset(dt, offsetHours){
   return `${hh}${mm}`;
 }
 function fmtZ(dt){ const hh=dt.getUTCHours().toString().padStart(2,'0'); const mm=dt.getUTCMinutes().toString().padStart(2,'0'); return `${hh}${mm}Z`; }
+
+function fmtDayTag(dt, offsetHours){
+  const ms = dt.getTime() + offsetHours*3600*1000;
+  const dd = new Date(ms);
+  const day = String(dd.getUTCDate()).padStart(2,'0');
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const mon = MON[dd.getUTCMonth()];
+  return `${day}${mon}`;
+}
+
 function lineDual(name, dt, localOffset, hint, tzLabel=null){
   const l = document.createElement('div'); l.className='line';
   const left = document.createElement('div');
-  const label = tzLabel ? `${name} <span class="hint">(${tzLabel})</span>` : name;
-  left.innerHTML = `<span class="name">${label}</span>${hint?` <span class="hint">(${hint})</span>`:''}`;
+
+  // Build label with TZ and optional day tag for T/O and Land
+  const baseLabel = tzLabel ? `${name} <span class="hint">(${tzLabel})</span>` : name;
+  const withDay = (name === 'T/O' || name === 'Land')
+    ? `${baseLabel} <span class="hint">${fmtDayTag(dt, localOffset)}</span>`
+    : baseLabel;
+
+  left.innerHTML = `<span class="name">${withDay}</span>${hint ? ` <span class="hint">(${hint})</span>` : ''}`;
+
   const right = document.createElement('div'); right.className='time';
   right.textContent = `${fmtLocalWithOffset(dt, localOffset)}L / ${fmtZ(dt)}`;
   l.appendChild(left); l.appendChild(right); out.appendChild(l);
 }
+
 function line(name, dt, off, hint){ lineDual(name, dt, off, hint); }
 
 function tzLabelFromOffset(off){
