@@ -528,9 +528,10 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   
 // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => {
-  // Only show Zulu day tag for T/O and Land, skip UTC offset clutter
-  const tag = (label === 'T/O' || label === 'Land') ? ` ${fmtZuluDayTag(dt)}` : '';
-  return `${label}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+  // Use Lnd for text output brevity, keep Zulu date tag
+  const shortLabel = (label === 'Land') ? 'Lnd' : label;
+  const tag = (shortLabel === 'T/O' || shortLabel === 'Lnd') ? ` ${fmtZuluDayTag(dt)}` : '';
+  return `${shortLabel}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
 };
 
 const durHHMM = `${String(Math.floor(dur/60)).padStart(2,'0')}${String(dur%60).padStart(2,'0')}`;
