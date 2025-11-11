@@ -312,12 +312,14 @@ input.ok {
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
 }
 
-  .section-bar h1.section-title {
-  font-size: 1rem;
-  font-weight: 400;
+ /* === Unique style for Timeline title === */
+.timeline-title {
+  font-size: 1rem;                 /* same as KC135 Time Calc */
+  font-weight: 700;                /* bold to match top header */
   letter-spacing: 0.3px;
   color: #e5e7eb;
   margin: 0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
 }
 
   </style>
@@ -410,12 +412,12 @@ input.ok {
       </div>
     </div>
 
-   <div class="section-bar">
-     
-  <h1 class="section-title">Timeline</h1>
+  <div class="section-bar">
+  <div class="section-title timeline-title">Timeline</div>
   <span id="fdpNotice" class="notice" aria-live="polite"></span>
   <button id="copy" class="copy-btn" disabled>Copy</button>
 </div>
+
 
     <div id="timeline" class="timeline"></div>
 
