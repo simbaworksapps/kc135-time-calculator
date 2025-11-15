@@ -266,7 +266,7 @@ function fmtZuluDayTag(dt) {
   const day = String(dt.getUTCDate()).padStart(2, '0');
   const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const mon = MON[dt.getUTCMonth()];
-  return `${day}${mon} (Z)`;  // added space before (Z)
+  return `${day}${mon} Z`;
 }
 
 function lineDual(name, dt, localOffset, hint, tzLabel = null) {
@@ -528,11 +528,17 @@ if (ld.getTime() >= fdpEnd.getTime()) {
   
 // Build compact text for Copy (XXXXL/XXXXZ)
 const pair = (label, dt, off) => {
-  // Use Lnd for text output brevity, keep Zulu date tag
   const shortLabel = (label === 'Land') ? 'Lnd' : label;
-  const tag = (shortLabel === 'T/O' || shortLabel === 'Lnd') ? ` ${fmtZuluDayTag(dt)}` : '';
-  return `${shortLabel}${tag}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+  const base = `${shortLabel}: ${fmtLocalWithOffset(dt, off)}L/${fmtZ(dt)}`;
+
+  // For T/O and Lnd, add the Zulu day tag at the end in parens
+  if (shortLabel === 'T/O' || shortLabel === 'Lnd') {
+    return `${base} (${fmtZuluDayTag(dt)})`;  // T/O: XXXXL/XXXXZ (15NOV Z)
+  }
+
+  return base;
 };
+
 
 const durHHMM = `${String(Math.floor(dur/60)).padStart(2,'0')}${String(dur%60).padStart(2,'0')}`;
 
