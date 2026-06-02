@@ -36,7 +36,8 @@
     .card { background:var(--card); border:1px solid var(--stroke); border-radius:14px; padding:10px; }
     label { display:block; color:#cbd5e1; font-size:0.8rem; margin-bottom:4px; }
     input, select, button { width:100%; padding:10px; border-radius:12px; border:1px solid var(--stroke); background:#0b1220; color:#e5e7eb; font-size:0.95rem; }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .row { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:8px; }
+    .row > * { min-width:0; }
     .row-3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }
     .btnbar { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px; }
     button.toggle.active { outline:2px solid var(--accent); }
@@ -86,7 +87,10 @@
 
     .tiny { font-size:0.75rem; color:#9ca3af; margin-top:2px; }
     ::placeholder { color:#64748b; opacity:1; }
-    .nowbox{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
+    .nowbox{width:100%;background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas;font-size:0.95rem;display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;column-gap:8px;row-gap:2px}
+    .nowbox .now-time,.nowbox .now-offset{white-space:nowrap}
+    .nowbox .now-jd{white-space:nowrap}
+    .nowbox.jd-wrapped .now-jd{margin-left:auto}
 
 /* Title + centered pill + Copy (flex version) */
 .section-bar{
@@ -335,7 +339,7 @@ input.ok {
        <a href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" title="Visit my LinkedIn" style="display:inline-block;">
     <img src="assets/simba.jpg" alt="SIMBA" onerror="this.style.display='none'" style="cursor:pointer;">
   </a>
-        <div class="txt">CAO: 15NOV25 <span class="dot">•</span> SIMBA</div>
+        <div class="txt">CAO: 02JUN26 <span class="dot">•</span> SIMBA</div>
       </div>
     </div>
   </header>
@@ -348,7 +352,7 @@ input.ok {
         </div>
         <div>
           <label>Now</label>
-          <div id="nowPanel" class="nowbox">--:--L / --:--Z (UTC±?)</div>
+          <div id="nowPanel" class="nowbox"><span class="now-time">--:--L / --:--Z</span><span class="now-offset">(UTC±?)</span><span class="now-jd">JD---</span></div>
         </div>
       </div>
 
@@ -532,7 +536,7 @@ input.ok {
   </div>
 </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=1.7"></script>
   
 </body>
 </html>

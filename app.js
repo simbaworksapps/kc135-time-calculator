@@ -213,6 +213,44 @@ function formatOffsetLabel(off){
   const mins = frac ? ':'+String(Math.round(frac*60)).padStart(2,'0') : '';
   return `UTC${sign}${Math.trunc(off)}${mins}`;
 }
+function fmtZuluJulianDay(dt){
+  const start = Date.UTC(dt.getUTCFullYear(), 0, 1);
+  const today = Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate());
+  const day = Math.floor((today - start) / 86400000) + 1;
+  return `JD${String(day).padStart(3,'0')}`;
+}
+function alignNowJulianDay(){
+  if(!nowPanel) return;
+  const offset = nowPanel.querySelector('.now-offset');
+  const jd = nowPanel.querySelector('.now-jd');
+  if(!offset || !jd) return;
+  nowPanel.classList.remove('jd-wrapped');
+  const offsetTop = offset.getBoundingClientRect().top;
+  const jdTop = jd.getBoundingClientRect().top;
+  nowPanel.classList.toggle('jd-wrapped', jdTop > offsetTop + 1);
+}
+function fitNowPanelText(){
+  if(!nowPanel) return;
+  nowPanel.style.fontSize = '';
+  alignNowJulianDay();
+
+  const pieces = [...nowPanel.querySelectorAll('.now-time,.now-offset,.now-jd')];
+  const overflows = () => {
+    const box = nowPanel.getBoundingClientRect();
+    return pieces.some(piece => {
+      const rect = piece.getBoundingClientRect();
+      return rect.left < box.left + 1 || rect.right > box.right - 1;
+    });
+  };
+
+  let size = parseFloat(getComputedStyle(nowPanel).fontSize);
+  const minSize = 12;
+  while(overflows() && size > minSize){
+    size -= 0.5;
+    nowPanel.style.fontSize = `${size}px`;
+    alignNowJulianDay();
+  }
+}
 function updateNowPanel(){
   if(!nowPanel) return;
   const d = new Date();
@@ -222,7 +260,8 @@ function updateNowPanel(){
   const lm = String(local.getUTCMinutes()).padStart(2,'0');
   const zh = String(d.getUTCHours()).padStart(2,'0');
   const zm = String(d.getUTCMinutes()).padStart(2,'0');
-  nowPanel.textContent = `${lh}${lm}L / ${zh}${zm}Z (${formatOffsetLabel(off)})`;
+  nowPanel.innerHTML = `<span class="now-time">${lh}${lm}L / ${zh}${zm}Z</span><span class="now-offset">(${formatOffsetLabel(off)})</span><span class="now-jd">${fmtZuluJulianDay(d)}</span>`;
+  requestAnimationFrame(fitNowPanelText);
 }
 
 function setActive(el, on){ el.classList.toggle('active', !!on); }
@@ -725,6 +764,7 @@ function boot(){
   resetAll();
   updateNowPanel();
   setInterval(updateNowPanel, 30000);
+  window.addEventListener('resize', fitNowPanelText);
 
   validateInputs();
   setTimeout(maybeAskForDefaults, 0);
