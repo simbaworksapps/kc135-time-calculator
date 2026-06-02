@@ -1,11 +1,15 @@
-const CACHE_NAME = "kc135-pwa-v1.8"; // bump version to refresh cache
+const CACHE_NAME = "kc135-pwa-v1.10"; // bump version to refresh cache
 const ASSETS = [
-  "./index.html",
+  "./",
   "./app.js?v=1.8",
   "./manifest.json",
-  "./icons/android-chrome-192.png",
-  "./icons/android-chrome-512.png",
-  "./icons/apple-touch-icon-180.png"
+  "./icons/android-chrome-192.png?v=1.10",
+  "./icons/android-chrome-512.png?v=1.10",
+  "./icons/apple-touch-icon-180.png?v=1.10",
+  "./icons/apple-touch-icon-167.png?v=1.10",
+  "./icons/apple-touch-icon-152.png?v=1.10",
+  "./icons/apple-touch-icon-120.png?v=1.10",
+  "./assets/simba.jpg?v=1.10"
 ];
 
 self.addEventListener("install", e => {
