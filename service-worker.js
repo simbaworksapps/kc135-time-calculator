@@ -1,7 +1,7 @@
-const CACHE_NAME = "kc135-pwa-v1.10"; // bump version to refresh cache
+const CACHE_NAME = "kc135-pwa-v1.15"; // bump version to refresh cache
 const ASSETS = [
   "./",
-  "./app.js?v=1.8",
+  "./app.js?v=1.15",
   "./manifest.json",
   "./icons/android-chrome-192.png?v=1.10",
   "./icons/android-chrome-512.png?v=1.10",

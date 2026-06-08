@@ -234,7 +234,7 @@ function fitNowPanelText(){
   nowPanel.style.fontSize = '';
   alignNowJulianDay();
 
-  const pieces = [...nowPanel.querySelectorAll('.now-time,.now-offset,.now-jd')];
+  const pieces = [...nowPanel.querySelectorAll('.now-local,.now-sep,.now-zulu,.now-offset,.now-jd')];
   const overflows = () => {
     const box = nowPanel.getBoundingClientRect();
     return pieces.some(piece => {
@@ -260,7 +260,7 @@ function updateNowPanel(){
   const lm = String(local.getUTCMinutes()).padStart(2,'0');
   const zh = String(d.getUTCHours()).padStart(2,'0');
   const zm = String(d.getUTCMinutes()).padStart(2,'0');
-  nowPanel.innerHTML = `<span class="now-time">${lh}${lm}L / ${zh}${zm}Z</span><span class="now-offset">(${formatOffsetLabel(off)})</span><span class="now-jd">${fmtZuluJulianDay(d)}</span>`;
+  nowPanel.innerHTML = `<span class="now-local">${lh}${lm}L</span><span class="now-sep">|</span><span class="now-zulu">${zh}${zm}Z</span><span class="now-offset">(${formatOffsetLabel(off)})</span><span class="now-jd">${fmtZuluJulianDay(d)}</span>`;
   requestAnimationFrame(fitNowPanelText);
 }
 

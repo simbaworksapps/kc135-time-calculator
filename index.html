@@ -87,8 +87,8 @@
 
     .tiny { font-size:0.75rem; color:#9ca3af; margin-top:2px; }
     ::placeholder { color:#64748b; opacity:1; }
-    .nowbox{width:100%;background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas;font-size:0.95rem;display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;column-gap:8px;row-gap:2px}
-    .nowbox .now-time,.nowbox .now-offset{white-space:nowrap}
+    .nowbox{width:100%;background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas;font-size:0.95rem;display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;column-gap:4px;row-gap:2px}
+    .nowbox .now-local,.nowbox .now-sep,.nowbox .now-zulu,.nowbox .now-offset{white-space:nowrap}
     .nowbox .now-jd{white-space:nowrap}
     .nowbox.jd-wrapped .now-jd{margin-left:auto}
 
@@ -339,7 +339,7 @@ input.ok {
        <a href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" title="Visit my LinkedIn" style="display:inline-block;">
     <img src="assets/simba.jpg?v=1.10" alt="SIMBA" onerror="this.style.display='none'" style="cursor:pointer;">
   </a>
-        <div class="txt">CAO: 2JUN26 <span class="dot">•</span> SIMBA</div>
+        <div class="txt">CAO: 8JUN26 <span class="dot">•</span> SIMBA</div>
       </div>
     </div>
   </header>
@@ -352,7 +352,7 @@ input.ok {
         </div>
         <div>
           <label>Now</label>
-          <div id="nowPanel" class="nowbox"><span class="now-time">--:--L / --:--Z</span><span class="now-offset">(UTC±?)</span><span class="now-jd">JD---</span></div>
+          <div id="nowPanel" class="nowbox"><span class="now-local">--:--L</span><span class="now-sep">|</span><span class="now-zulu">--:--Z</span><span class="now-offset">(UTC±?)</span><span class="now-jd">JD---</span></div>
         </div>
       </div>
 
@@ -374,7 +374,7 @@ input.ok {
           <div class="tiny">4 digits only, auto-formats.</div>
         </div>
         <div>
-          <label for="dur">Sortie Duration (HH:MM)</label>
+          <label for="dur">Duration (HH:MM)</label>
           <input id="dur" type="text" inputmode="numeric" placeholder="0500 → 05:00">
         </div>
       </div>
@@ -536,7 +536,7 @@ input.ok {
   </div>
 </div>
 
-  <script src="app.js?v=1.8"></script>
+  <script src="app.js?v=1.15"></script>
   
 </body>
 </html>
