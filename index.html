@@ -46,9 +46,11 @@
       background-position:right 10px center;
       background-size:16px 16px;
     }
-    input[type="date"] { min-width:0; max-width:100%; }
+    input[type="date"] { min-width:0; max-width:100%; -webkit-appearance:none; appearance:none; }
     .row { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:8px; }
     .row > * { min-width:0; }
+    .date-now-row > * { overflow:hidden; }
+    .date-now-row #date { display:block; inline-size:100%; }
     .row-3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }
     .btnbar { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px; }
     button.toggle.active { outline:2px solid var(--accent); }
@@ -434,7 +436,7 @@ input.ok {
   </header>
   <main>
     <div class="card">
-      <div class="row">
+      <div class="row date-now-row">
         <div>
           <label for="date">Dep Date (Z)</label>
           <input id="date" type="date">
