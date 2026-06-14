@@ -49,6 +49,59 @@
     .time { font-family: ui-monospace,Menlo,Consolas; font-weight:600; letter-spacing:0.5px; }
     .hint { color:#9ca3af; font-size:0.75rem; margin-left:6px; }
     .footer { margin:10px 0; text-align:center; color:#9ca3af; font-size:0.75rem; }
+    .install-banner{
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:10px 0;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid #2563eb;
+      background:#1d4ed8;
+      color:#eff6ff;
+      font-size:0.9rem;
+    }
+    .install-banner.ready{display:flex}
+    .install-banner button{
+      width:auto;
+      flex:0 0 auto;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #bfdbfe;
+      background:#eff6ff;
+      color:#0b1220;
+      font-size:0.85rem;
+      line-height:1;
+    }
+    .install-help{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:70;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(0,0,0,.6);
+    }
+    .install-help.open{display:flex}
+    .install-help-panel{
+      max-width:360px;
+      width:100%;
+      background:#0b1220;
+      color:#e5e7eb;
+      border:1px solid #334155;
+      border-radius:14px;
+      padding:16px;
+    }
+    .install-help-panel p{margin:0 0 14px;line-height:1.4}
+    .install-help-panel button{
+      width:100%;
+      border-radius:10px;
+      background:#22c55e;
+      color:#0b1220;
+      border:none;
+    }
     .sticky-run { position:fixed; left:0; right:0; bottom:0; padding:10px; background:rgba(11,18,32,0.9); backdrop-filter: blur(6px); border-top:1px solid #111827; }
    /* Bottom bar grid - perfectly centered gear */
 .sticky-run .row{
@@ -133,8 +186,8 @@
   height:42px;
   padding:10px 12px;
   border-radius:12px;
-  background:#facc15;
-  color:#0b1220;
+  background:#2563eb;
+  color:#eff6ff;
   border:none;
   line-height:1;
   cursor:pointer;
@@ -442,7 +495,10 @@ input.ok {
 
     <div id="timeline" class="timeline"></div>
 
-    <div class="footer">Works offline. Add to Home screen to install.</div>
+    <div id="installBanner" class="install-banner">
+      <span>Add to home screen.</span>
+      <button id="installApp" type="button">Install App</button>
+    </div>
   </main>
 
   <div class="sticky-run">
@@ -453,6 +509,13 @@ input.ok {
 
 <button id="reset">Reset</button>
 
+    </div>
+  </div>
+
+  <div id="installHelpModal" class="install-help" role="dialog" aria-modal="true" aria-labelledby="installHelpText">
+    <div class="install-help-panel">
+      <p id="installHelpText">On iPad or iPhone, open this site in Safari, tap Share, then choose Add to Home Screen.</p>
+      <button id="installHelpClose" type="button">OK</button>
     </div>
   </div>
 
@@ -510,15 +573,58 @@ input.ok {
     }
   }
 
+  let deferredInstallPrompt = null;
+  const installBanner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installApp');
+  const installHelpModal = document.getElementById('installHelpModal');
+  const installHelpClose = document.getElementById('installHelpClose');
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+
+  function hideInstallBanner() {
+    installBanner?.classList.remove('ready');
+  }
+
+  function showInstallBanner() {
+    if (!isStandalone) installBanner?.classList.add('ready');
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallBanner();
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      if (choice && choice.outcome === 'accepted') hideInstallBanner();
+      return;
+    }
+    installHelpModal?.classList.add('open');
+  });
+
+  installHelpClose?.addEventListener('click', () => {
+    installHelpModal?.classList.remove('open');
+  });
+
+  installHelpModal?.addEventListener('click', (e) => {
+    if (e.target === installHelpModal) installHelpModal.classList.remove('open');
+  });
+
+  showInstallBanner();
+
   // Track PWA install (Add to Home Screen)
   window.addEventListener('appinstalled', () => {
+    hideInstallBanner();
     gaEvent('pwa_installed', { event_category: 'PWA', event_label: 'Add to Home Screen' });
   });
 
   // Track PWA launches when opened as an installed app
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                    || window.navigator.standalone === true;
   if (isStandalone) {
+    hideInstallBanner();
     gaEvent('pwa_open', { event_category: 'PWA', event_label: 'Launched in standalone' });
   }
 
