@@ -127,6 +127,24 @@
   cursor:pointer;
   opacity:1;
 }
+.section-bar .update-btn{
+  display:none;
+  width:auto !important;
+  height:42px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#facc15;
+  color:#0b1220;
+  border:none;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:none;
+}
+.section-bar .update-btn.ready{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
 
 /* Always 2 columns, even on tiny portrait screens */
 #defaultsModal .defaults-grid{
@@ -339,7 +357,7 @@ input.ok {
        <a href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" title="Visit my LinkedIn" style="display:inline-block;">
     <img src="assets/simba.jpg?v=1.10" alt="SIMBA" onerror="this.style.display='none'" style="cursor:pointer;">
   </a>
-        <div class="txt">CAO: 8JUN26 <span class="dot">•</span> SIMBA</div>
+        <div class="txt">CAO: 14JUN26 <span class="dot">•</span> SIMBA</div>
       </div>
     </div>
   </header>
@@ -417,6 +435,7 @@ input.ok {
   <div class="section-bar">
   <div class="section-title timeline-title">Timeline</div>
   <span id="fdpNotice" class="notice" aria-live="polite"></span>
+  <button id="updateApp" class="update-btn" type="button">Update App</button>
   <button id="copy" class="copy-btn" disabled>Copy</button>
 </div>
 
@@ -440,7 +459,42 @@ input.ok {
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+        const updateBtn = document.getElementById('updateApp');
+        let refreshing = false;
+        let waitingWorker = null;
+
+        function showUpdateButton(worker) {
+          waitingWorker = worker;
+          if (updateBtn) updateBtn.classList.add('ready');
+        }
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+
+        navigator.serviceWorker.register('./service-worker.js').then(reg => {
+          if (reg.waiting) showUpdateButton(reg.waiting);
+
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateButton(newWorker);
+              }
+            });
+          });
+
+          updateBtn?.addEventListener('click', async () => {
+            if (!waitingWorker) return;
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Updating...';
+            waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+            setTimeout(() => window.location.reload(), 1500);
+          });
+        }).catch(()=>{});
       });
     }
   </script>
