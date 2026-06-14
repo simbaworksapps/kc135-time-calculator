@@ -263,6 +263,12 @@ function updateNowPanel(){
   nowPanel.innerHTML = `<span class="now-local">${lh}${lm}L</span><span class="now-sep">|</span><span class="now-zulu">${zh}${zm}Z</span><span class="now-offset">(${formatOffsetLabel(off)})</span><span class="now-jd">${fmtZuluJulianDay(d)}</span>`;
   requestAnimationFrame(fitNowPanelText);
 }
+function scheduleNowPanelUpdates(){
+  updateNowPanel();
+  const now = new Date();
+  const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 50;
+  setTimeout(scheduleNowPanelUpdates, Math.max(msToNextMinute, 250));
+}
 
 function setActive(el, on){ el.classList.toggle('active', !!on); }
 function hmm(min){ const h=Math.floor(min/60), m=min%60; return `${h}:${String(m).padStart(2,'0')}`; }
@@ -762,8 +768,10 @@ function boot(){
   tzArrEl.value = String(off);
 
   resetAll();
-  updateNowPanel();
-  setInterval(updateNowPanel, 30000);
+  scheduleNowPanelUpdates();
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden) updateNowPanel();
+  });
   window.addEventListener('resize', fitNowPanelText);
 
   validateInputs();
